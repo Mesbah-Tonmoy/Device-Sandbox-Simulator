@@ -32,10 +32,10 @@ const FanControls: React.FC = () => {
   };
 
   return (
-    <div className="bg-[var(--color-dark-secondary)] p-6 rounded-xl border border-gray-700 space-y-5">
+    <div className="bg-[#1E293980] p-[25px] dss-rounded border border-gray-700 space-y-5">
       {/* Power Toggle */}
       <div className="flex items-center justify-between">
-        <label className="text-white text-sm font-medium">Power</label>
+        <label>Power</label>
         <div className="toggle-switch">
           <input
             type="checkbox"
@@ -49,9 +49,9 @@ const FanControls: React.FC = () => {
 
       {/* Speed Slider */}
       <div>
-        <div className="flex items-center justify-between mb-2">
-          <label className="text-white text-sm font-medium">Speed</label>
-          <span className="text-gray-400 text-sm font-medium">{speed}%</span>
+        <div className="flex items-center justify-between mb-[10px]">
+          <label>Speed</label>
+          <span className="text-[#99A1AF] text-base font-normal">{speed}%</span>
         </div>
         <input
           ref={sliderRef}

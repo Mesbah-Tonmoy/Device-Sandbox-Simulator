@@ -11,7 +11,10 @@ interface SavePresetModalProps {
   onClose: () => void;
 }
 
-const SavePresetModal: React.FC<SavePresetModalProps> = ({ isOpen, onClose }) => {
+const SavePresetModal: React.FC<SavePresetModalProps> = ({
+  isOpen,
+  onClose,
+}) => {
   const { saveAsPreset } = useDevice();
   const [presetName, setPresetName] = useState('');
   const [error, setError] = useState('');
@@ -70,10 +73,10 @@ const SavePresetModal: React.FC<SavePresetModalProps> = ({ isOpen, onClose }) =>
       />
 
       {/* Modal */}
-      <div className="relative bg-[var(--color-dark-secondary)] rounded-xl border border-gray-700 w-full max-w-md mx-4 shadow-2xl">
+      <div className="relative bg-dark-secondary rounded-xl border border-gray-700 w-full max-w-md mx-4 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
-          <h2 className="text-white text-lg font-semibold">Give me a name</h2>
+          <h2 className="text-white text-lg font-bold">Give me a name</h2>
           <button
             onClick={handleCancel}
             disabled={isLoading}
@@ -97,13 +100,11 @@ const SavePresetModal: React.FC<SavePresetModalProps> = ({ isOpen, onClose }) =>
             onChange={(e) => setPresetName(e.target.value)}
             placeholder="Name it"
             disabled={isLoading}
-            className="w-full px-4 py-3 bg-[var(--color-dark-tertiary)] border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
+            className="w-full px-4 py-3 bg-dark-tertiary border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
             autoFocus
           />
 
-          {error && (
-            <p className="mt-2 text-red-500 text-sm">{error}</p>
-          )}
+          {error && <p className="mt-2 text-red-500 text-sm">{error}</p>}
 
           <p className="mt-3 text-gray-400 text-sm">
             By adding this effect as a preset you can reuse this anytime.
@@ -115,14 +116,14 @@ const SavePresetModal: React.FC<SavePresetModalProps> = ({ isOpen, onClose }) =>
               type="button"
               onClick={handleCancel}
               disabled={isLoading}
-              className="px-5 py-2 bg-[var(--color-dark-tertiary)] hover:bg-[var(--color-dark-hover)] text-white rounded-lg border border-gray-600 transition-all duration-200 font-medium disabled:opacity-50"
+              className="px-5 py-2 bg-dark-tertiary hover:bg-dark-hover text-white rounded-lg border border-gray-600 transition-all duration-200 font-normal disabled:opacity-50"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isLoading}
-              className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 font-medium disabled:opacity-50 flex items-center gap-2"
+              className="px-5 py-2 bg-primary-blue hover:bg-primary-blue-hover text-white rounded-lg transition-all duration-200 font-normal disabled:opacity-50 flex items-center gap-2"
             >
               {isLoading && <div className="spinner w-4 h-4 border-2" />}
               Save Preset

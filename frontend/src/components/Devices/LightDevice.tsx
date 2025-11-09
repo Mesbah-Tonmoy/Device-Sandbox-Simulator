@@ -30,48 +30,43 @@ const LightDevice: React.FC<LightDeviceProps> = ({ settings }) => {
   };
 
   const getBulbColor = (): string => {
-    if (!power) return '#4b5563'; // Gray when off
+    if (!power) return '#4a5568'; // Dark gray when off
     return COLOR_TEMP_CONFIG[colorTemp as ColorTemp].color;
   };
 
   const getOpacity = (): number => {
-    if (!power) return 0.5;
-    return 0.5 + (brightness / 200); // Range from 0.5 to 1
+    if (!power) return 1;
+    return 0.85 + brightness / 667; // Range from 0.85 to 1
+  };
+
+  const getFilamentOpacity = (): number => {
+    if (!power) return 0;
+    return 0.5 + brightness / 200; // Range from 0.5 to 1
   };
 
   return (
     <div className="relative flex flex-col items-center">
-      {/* Light Holder/Base */}
-      <div className="w-20 h-3 bg-gradient-to-b from-gray-600 to-gray-700 rounded-t-sm mb-1" />
+      {/* Light Holder/Mount - Improved design */}
+      <div className="relative mb-2">
+        {/* Top cap */}
+        <div className="bg-linear-to-b from-[#4A5565] to-[#364153] w-16 h-3 rounded-t-[6px] m-auto" />
 
-      {/* Light Bulb */}
-      <div className={`relative ${power ? getGlowClass() : ''}`}>
-        <svg width="200" height="240" viewBox="0 0 200 240" fill="none">
-          {/* Bulb Shape */}
-          <ellipse
-            cx="100"
-            cy="120"
-            rx="80"
-            ry="100"
-            fill={getBulbColor()}
-            opacity={getOpacity()}
-            className="transition-all duration-300"
-          />
-          
-          {/* Filament (visible when on) */}
-          {power && (
-            <line
-              x1="100"
-              y1="80"
-              x2="100"
-              y2="160"
-              stroke="white"
-              strokeWidth="4"
-              opacity={brightness / 100}
-              className="transition-opacity duration-300"
-            />
-          )}
-        </svg>
+        {/* Holder ridges (3 lines) */}
+        <div>
+          <div className="bg-linear-to-b from-[#4A5565] to-[#364153] w-20 h-1 rounded-t-[6px]" />
+          <div className="bg-linear-to-b from-[#4A5565] to-[#364153] w-20 h-1 rounded-t-[6px]" />
+          <div className="bg-linear-to-b from-[#4A5565] to-[#364153] w-20 h-1 rounded-t-[6px]" />
+          <div className="bg-linear-to-b from-[#4A5565] to-[#364153] w-20 h-1 rounded-t-[6px]" />
+        </div>
+      </div>
+
+      {/* Light Bulb with Glow */}
+      <div
+        className={`relative transition-all duration-300 ${power ? getGlowClass() : ''}`}
+      >
+        <div className="w-[128px] h-[160px] rounded-full pt-8 pr-12 pl-8 bg-[radial-gradient(112.05%_89.64%_at_30%_30%,#4A5568_0%,#2D3748_50%,#1A202C_100%)] shadow-[inset_0_0_20px_#00000080]">
+          <div className="w-12 h-16 opacity-40 rounded-full bg-linear-to-br from-white/80 to-transparent blur-lg"></div>
+        </div>
       </div>
     </div>
   );

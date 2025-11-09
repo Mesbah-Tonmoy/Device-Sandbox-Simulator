@@ -1,14 +1,21 @@
-import type { ColorTemp, ColorTempConfig, LightSettings, FanSettings, Position } from '../types';
+import type {
+  ColorTemp,
+  ColorTempConfig,
+  LightSettings,
+  FanSettings,
+  Position,
+} from '../types';
 
 // API Configuration
-export const API_BASE_URL = 'http://localhost/device-sandbox-simulator/backend/api';
+export const API_BASE_URL =
+  'http://localhost/device-sandbox-simulator/backend/api';
 
 // API Endpoints
 export const API_ENDPOINTS = {
   DEVICE_SAVE: `${API_BASE_URL}/devices/save.php`,
   DEVICE_GET: `${API_BASE_URL}/devices/get.php`,
   DEVICE_DELETE: `${API_BASE_URL}/devices/delete.php`,
-  
+
   PRESET_SAVE: `${API_BASE_URL}/presets/save.php`,
   PRESET_LIST: `${API_BASE_URL}/presets/list.php`,
   PRESET_GET: `${API_BASE_URL}/presets/get.php`,
@@ -39,23 +46,23 @@ export const COLOR_TEMPS: Record<string, ColorTemp> = {
 export const COLOR_TEMP_CONFIG: Record<ColorTemp, ColorTempConfig> = {
   warm: {
     label: 'Warm',
-    color: '#ffd89b',
-    bgClass: 'bg-[#ffd89b]',
+    color: '#ffe5b4',
+    bgClass: 'bg-[#ffe5b4]',
   },
   neutral: {
     label: 'Neutral',
-    color: '#ffffff',
-    bgClass: 'bg-white',
+    color: '#f0f8ff',
+    bgClass: 'bg-[#f0f8ff]',
   },
   cool: {
     label: 'Cool',
-    color: '#89d4f5',
-    bgClass: 'bg-[#89d4f5]',
+    color: '#87ceeb',
+    bgClass: 'bg-[#87ceeb]',
   },
   pink: {
     label: 'Pink',
-    color: '#ffc0cb',
-    bgClass: 'bg-[#ffc0cb]',
+    color: '#ffb6c1',
+    bgClass: 'bg-[#ffb6c1]',
   },
 };
 

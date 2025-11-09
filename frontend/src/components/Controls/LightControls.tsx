@@ -37,10 +37,10 @@ const LightControls: React.FC = () => {
   };
 
   return (
-    <div className="bg-[var(--color-dark-secondary)] p-6 rounded-xl border border-gray-700 space-y-5">
+    <div className="bg-[#1E293980] p-[25px] dss-rounded border border-gray-700 space-y-5">
       {/* Power Toggle */}
       <div className="flex items-center justify-between">
-        <label className="text-white text-sm font-medium">Power</label>
+        <label>Power</label>
         <div className="toggle-switch">
           <input
             type="checkbox"
@@ -54,9 +54,7 @@ const LightControls: React.FC = () => {
 
       {/* Color Temperature */}
       <div>
-        <label className="text-white text-sm font-medium block mb-3">
-          Color Temperature
-        </label>
+        <label className="block mb-[10px]">Color Temperature</label>
         <div className="flex gap-2">
           {Object.entries(COLOR_TEMP_CONFIG).map(([key, config]) => (
             <button
@@ -65,8 +63,10 @@ const LightControls: React.FC = () => {
               className={`
                 color-temp-option ${config.bgClass}
                 ${colorTemp === key ? 'selected' : ''}
+                ${!power ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}
               `}
               aria-label={config.label}
+              disabled={!power}
             />
           ))}
         </div>
@@ -74,9 +74,11 @@ const LightControls: React.FC = () => {
 
       {/* Brightness Slider */}
       <div>
-        <div className="flex items-center justify-between mb-2">
-          <label className="text-white text-sm font-medium">Brightness</label>
-          <span className="text-gray-400 text-sm font-medium">{brightness}%</span>
+        <div className="flex items-center justify-between mb-[10px]">
+          <label>Brightness</label>
+          <span className="text-[#99A1AF] text-base font-normal">
+            {brightness}%
+          </span>
         </div>
         <input
           ref={sliderRef}

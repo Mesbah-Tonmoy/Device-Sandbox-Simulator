@@ -9,13 +9,13 @@ function App() {
   return (
     <DndProvider backend={HTML5Backend}>
       <DeviceProvider>
-        <div className="app-container h-screen w-screen flex overflow-hidden bg-[var(--color-dark-primary)]">
+        <div className="app-container h-screen w-screen flex overflow-auto bg-dark-primary">
           <Sidebar />
-          
+
           <main className="flex-1 flex flex-col">
             <Canvas />
           </main>
-          
+
           <Notification />
         </div>
       </DeviceProvider>

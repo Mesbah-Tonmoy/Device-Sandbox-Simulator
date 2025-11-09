@@ -21,7 +21,9 @@ const Canvas: React.FC = () => {
       if (!offset) return;
 
       // Calculate position relative to canvas
-      const canvasRect = document.getElementById('canvas')?.getBoundingClientRect();
+      const canvasRect = document
+        .getElementById('canvas')
+        ?.getBoundingClientRect();
       if (!canvasRect) return;
 
       const position = {
@@ -51,19 +53,19 @@ const Canvas: React.FC = () => {
   return (
     <>
       {/* Header with buttons */}
-      <header className="flex items-center justify-between px-8 py-4 bg-[var(--color-dark-primary)] border-b border-gray-700">
-        <h1 className="text-white text-lg font-medium">Testing Canvas</h1>
+      <header className="flex items-center justify-between px-6 pt-6 pb-4">
+        <h1 className="text-white text-lg font-normal">Testing Canvas</h1>
         {currentDevice && (
           <div className="flex gap-3">
             <button
               onClick={handleClear}
-              className="px-4 py-2 bg-[var(--color-dark-tertiary)] hover:bg-[var(--color-dark-hover)] text-white rounded-lg border border-gray-600 transition-all duration-200 font-medium"
+              className="px-4 py-2 bg-dark-tertiary hover:bg-dark-hover text-[#D1D5DC] rounded-lg border border-gray-600 transition-all duration-200 font-normal"
             >
               Clear
             </button>
             <button
               onClick={handleSavePreset}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-all duration-200 font-medium"
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-[#FFFFFF] rounded-lg transition-all duration-200 font-normal"
             >
               Save Preset
             </button>
@@ -74,17 +76,17 @@ const Canvas: React.FC = () => {
       {/* Canvas Area */}
       <div
         id="canvas"
-        ref={drop}
+        ref={drop as any}
         className={`
-          flex-1 relative overflow-hidden
-          bg-[var(--color-dark-primary)]
-          transition-colors duration-200
-          ${isOver ? 'bg-[var(--color-dark-secondary)]' : ''}
+          flex-1 relative overflow-auto
+          bg-dark-primary
+          transition-colors duration-200 px-6 pb-6
+          ${isOver ? 'bg-dark-secondary' : ''}
         `}
       >
         {/* Empty State */}
         {!currentDevice && (
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="flex items-center justify-center bg-[#10182880] border-2 border-gray-800 rounded-[14px]">
             <p className="text-gray-600 text-base">
               {isOver ? 'Drop here' : 'Drag anything here'}
             </p>
@@ -96,7 +98,10 @@ const Canvas: React.FC = () => {
       </div>
 
       {/* Save Preset Modal */}
-      <SavePresetModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+      <SavePresetModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </>
   );
 };

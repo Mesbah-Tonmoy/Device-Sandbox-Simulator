@@ -81,6 +81,7 @@ export interface ColorTempConfig {
   label: string;
   color: string;
   bgClass: string;
+  className: string;
 }
 
 // Context State Interface
@@ -89,7 +90,10 @@ export interface DeviceContextState {
   presets: Preset[];
   loading: boolean;
   notification: Notification | null;
-  addDevice: (type: DeviceType, position?: Position) => Promise<Device | undefined>;
+  addDevice: (
+    type: DeviceType,
+    position?: Position
+  ) => Promise<Device | undefined>;
   updateDevice: (updates: Partial<DeviceSettings>) => Promise<void>;
   updateDevicePosition: (position: Position) => Promise<void>;
   removeDevice: () => Promise<void>;

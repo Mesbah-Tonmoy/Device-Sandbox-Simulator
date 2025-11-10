@@ -48,21 +48,29 @@ export const COLOR_TEMP_CONFIG: Record<ColorTemp, ColorTempConfig> = {
     label: 'Warm',
     color: '#ffe5b4',
     bgClass: 'bg-[#ffe5b4]',
+    className:
+      'light-glow warm bg-[radial-gradient(112.05%_89.64%_at_30%_30%,#FFE5B4_0%,rgba(255,229,180,0.867)_50%,rgba(255,229,180,0.6)_100%)] shadow-[inset_0_0_20px_#FFE5B466,0_0_60px_#FFE5B499]',
   },
   neutral: {
     label: 'Neutral',
     color: '#f0f8ff',
     bgClass: 'bg-[#f0f8ff]',
+    className:
+      'light-glow neutral bg-[radial-gradient(112.05%_89.64%_at_30%_30%,#F0F8FF_0%,rgba(240,248,255,0.867)_50%,rgba(240,248,255,0.6)_100%)] shadow-[inset_0_0_20px_#F0F8FF66,0_0_60px_#F0F8FF99]',
   },
   cool: {
     label: 'Cool',
     color: '#87ceeb',
     bgClass: 'bg-[#87ceeb]',
+    className:
+      'light-glow cool bg-[radial-gradient(112.05%_89.64%_at_30%_30%,#87CEEB_0%,rgba(135,206,235,0.867)_50%,rgba(135,206,235,0.6)_100%)] shadow-[inset_0_0_20px_#87CEEB66,0_0_60px_#87CEEB99]',
   },
   pink: {
     label: 'Pink',
     color: '#ffb6c1',
     bgClass: 'bg-[#ffb6c1]',
+    className:
+      'light-glow pink bg-[radial-gradient(112.05%_89.64%_at_30%_30%,#FFB6C1_0%,rgba(255,182,193,0.867)_50%,rgba(255,182,193,0.6)_100%)] shadow-[inset_0_0_20px_#FFB6C166,0_0_60px_#FFB6C199]',
   },
 };
 

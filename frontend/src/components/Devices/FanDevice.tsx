@@ -25,7 +25,9 @@ const FanDevice: React.FC<FanDeviceProps> = ({ settings }) => {
       <div
         className="relative w-48 h-48"
         style={{
-          animation: power ? `spin ${getAnimationDuration()} linear infinite` : 'none',
+          animation: power
+            ? `spin ${getAnimationDuration()} linear infinite`
+            : 'none',
         }}
       >
         {/* Center Circle */}

@@ -87,7 +87,9 @@ const LightControls: React.FC = () => {
           max="100"
           value={brightness}
           onChange={handleBrightnessChange}
-          className="w-full"
+          disabled={!power}
+          className={`w-full ${!power ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}`}
+          aria-disabled={!power}
         />
       </div>
     </div>

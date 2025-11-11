@@ -14,10 +14,13 @@
   /* Custom Colors */
   --color-dark-primary: #030712;
   --color-dark-secondary: #101828;
-  --color-dark-tertiary: #2d3548; /* #141D2B */
-  --color-dark-hover: #383f56;
 
   --color-primary-blue: #2b7fff;
+
+  --text-light-primary: #f3f4f6;
+  --text-light-secondary: #e5e7eb;
+  --text-dark-gray: #99a1af;
+  --text-light-gray: #d1d5dc;
 
   --color-light-warm: #ffe5b4;
   --color-light-neutral: #f0f8ff;
@@ -259,14 +262,13 @@ input[type='range']::-moz-range-thumb:hover {
 /* Control Panel Animation */
 .control-panel {
   animation: slideUp 0.3s ease-out;
-  width: 448px;
 }
 
 .control-panel label {
   font-size: 0.875rem;
   line-height: 0.875rem;
   font-weight: 500;
-  color: #e5e7eb;
+  color: var(--text-light-secondary);
 }
 
 .dss-rounded {
@@ -350,22 +352,7 @@ input[type='range']::-moz-range-thumb:hover {
   }
 }
 
-/* Utility Classes */
-.app-container {
-  min-height: 100vh;
-  display: flex;
-}
-
 /* Color Temperature Selector - 40% opacity */
-.color-temp-option {
-  width: 93.5px;
-  height: 48px;
-  border-radius: 10px;
-  /* cursor: pointer; */
-  transition: all 0.2s;
-  border: 2px solid #4a5565;
-}
-
 .color-temp-option:not(:disabled):hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
@@ -374,11 +361,4 @@ input[type='range']::-moz-range-thumb:hover {
 .color-temp-option.selected {
   border-color: var(--color-primary-blue);
   box-shadow: 0px 0px 0px 2px rgba(var(--color-primary-blue), 0.5);
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .app-container {
-    flex-direction: column;
-  }
 }

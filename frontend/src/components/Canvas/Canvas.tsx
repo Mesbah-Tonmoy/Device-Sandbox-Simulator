@@ -54,18 +54,20 @@ const Canvas: React.FC = () => {
     <>
       {/* Header with buttons */}
       <header className="flex items-center justify-between px-6 pt-6 pb-4">
-        <h1 className="text-white text-lg font-normal">Testing Canvas</h1>
+        <h1 className="text-(--text-light-primary) text-lg font-normal">
+          Testing Canvas
+        </h1>
         {currentDevice && (
           <div className="flex gap-3">
             <button
               onClick={handleClear}
-              className="px-4 py-2 bg-dark-tertiary hover:bg-dark-hover text-[#D1D5DC] rounded-lg border border-gray-600 transition-all duration-200 font-normal"
+              className="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-(--text-light-gray) rounded-lg border border-gray-700 transition-all duration-200 font-normal disabled:opacity-50 cursor-pointer"
             >
               Clear
             </button>
             <button
               onClick={handleSavePreset}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-[#FFFFFF] rounded-lg transition-all duration-200 font-normal"
+              className="px-3 py-2 bg-primary-blue hover:bg-blue-600 text-white rounded-lg transition-all duration-200 font-normal disabled:opacity-50 cursor-pointer"
             >
               Save Preset
             </button>
@@ -77,17 +79,12 @@ const Canvas: React.FC = () => {
       <div
         id="canvas"
         ref={drop as any}
-        className={`
-          flex-1 relative overflow-auto
-          bg-dark-primary
-          transition-colors duration-200 px-6 pb-6
-          ${isOver ? 'bg-dark-secondary' : ''}
-        `}
+        className={`flex-1 relative overflow-auto bg-dark-primary transition-colors duration-200 px-6 pb-6 ${isOver ? 'bg-dark-secondary' : ''}`}
       >
         {/* Empty State */}
         {!currentDevice && (
-          <div className="flex items-center justify-center bg-[#10182880] border-2 border-gray-800 rounded-[14px]">
-            <p className="text-gray-600 text-base">
+          <div className="flex items-center justify-center bg-[#10182880] border-2 border-gray-800 dss-rounded min-h-full">
+            <p className="text-(--text-light-secondary) text-base opacity-30">
               {isOver ? 'Drop here' : 'Drag anything here'}
             </p>
           </div>

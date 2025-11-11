@@ -23,7 +23,9 @@ const Sidebar: React.FC = () => {
     <aside className="w-56 bg-dark-secondary border-r border-gray-800 p-4 flex flex-col gap-6 overflow-y-auto">
       {/* Devices Section */}
       <section>
-        <h2 className="text-white text-base font-normal mb-3">Devices</h2>
+        <h2 className="text-(--text-light-primary) text-base font-normal mb-3">
+          Devices
+        </h2>
         <div className="flex flex-col gap-2">
           <DeviceItem type={DEVICE_TYPES.LIGHT} />
           <DeviceItem type={DEVICE_TYPES.FAN} />
@@ -32,7 +34,9 @@ const Sidebar: React.FC = () => {
 
       {/* Saved Presets Section */}
       <section>
-        <h2 className="text-white text-base font-normal mb-3">Saved Presets</h2>
+        <h2 className="text-(--text-light-primary) text-base font-normal mb-3">
+          Saved Presets
+        </h2>
         <div className="flex flex-col gap-2">
           {presets.length === 0 ? (
             <div className="text-gray-500 text-sm italic py-2">

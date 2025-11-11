@@ -61,7 +61,7 @@ const LightControls: React.FC = () => {
               key={key}
               onClick={() => handleColorTempChange(key as ColorTemp)}
               className={`
-                color-temp-option ${config.bgClass}
+                color-temp-option w-[93.5px] h-12 rounded-xl border-2 border-gray-600 transition-all duration-200 ${config.bgClass}
                 ${colorTemp === key ? 'selected' : ''}
                 ${!power ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}
               `}
@@ -76,7 +76,7 @@ const LightControls: React.FC = () => {
       <div>
         <div className="flex items-center justify-between mb-[10px]">
           <label>Brightness</label>
-          <span className="text-[#99A1AF] text-base font-normal">
+          <span className="text-(--text-dark-gray) text-base font-normal">
             {brightness}%
           </span>
         </div>

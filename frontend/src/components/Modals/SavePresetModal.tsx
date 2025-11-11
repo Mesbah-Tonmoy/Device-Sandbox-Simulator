@@ -73,16 +73,18 @@ const SavePresetModal: React.FC<SavePresetModalProps> = ({
       />
 
       {/* Modal */}
-      <div className="relative bg-dark-secondary rounded-xl border border-gray-700 w-full max-w-md mx-4 shadow-2xl">
+      <div className="relative bg-dark-secondary rounded-xl border border-gray-700 w-full max-w-[530px] mx-4 shadow-2xl">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
-          <h2 className="text-white text-lg font-bold">Give me a name</h2>
+          <h2 className="text-(--text-light-secondary) text-lg font-bold">
+            Give me a name
+          </h2>
           <button
             onClick={handleCancel}
             disabled={isLoading}
-            className="text-gray-400 hover:text-white transition-colors disabled:opacity-50"
+            className="text-gray-200 hover:text-white transition-colors cursor-pointer disabled:opacity-50"
           >
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 16 16">
               <path
                 fillRule="evenodd"
                 d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -100,30 +102,30 @@ const SavePresetModal: React.FC<SavePresetModalProps> = ({
             onChange={(e) => setPresetName(e.target.value)}
             placeholder="Name it"
             disabled={isLoading}
-            className="w-full px-4 py-3 bg-dark-tertiary border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
+            className="w-full px-3 py-3 bg-gray-700 rounded-lg text-white text-sm placeholder-(--text-dark-gray) focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
             autoFocus
           />
 
           {error && <p className="mt-2 text-red-500 text-sm">{error}</p>}
 
-          <p className="mt-3 text-gray-400 text-sm">
-            By adding this effect as a preset you can reuse this anytime.
+          <p className="mt-[14px] text-(--text-dark-gray) text-sm">
+            By adding this effect as a present you can reuse this anytime.
           </p>
 
           {/* Actions */}
-          <div className="flex justify-end gap-3 mt-6">
+          <div className="flex justify-end gap-3 mt-12">
             <button
               type="button"
               onClick={handleCancel}
               disabled={isLoading}
-              className="px-5 py-2 bg-dark-tertiary hover:bg-dark-hover text-white rounded-lg border border-gray-600 transition-all duration-200 font-normal disabled:opacity-50"
+              className="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-(--text-light-gray) rounded-lg border border-gray-700 transition-all duration-200 font-normal disabled:opacity-50 cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isLoading}
-              className="px-5 py-2 bg-primary-blue hover:bg-primary-blue-hover text-white rounded-lg transition-all duration-200 font-normal disabled:opacity-50 flex items-center gap-2"
+              className="px-3 py-2 bg-primary-blue hover:bg-blue-600 text-white rounded-lg transition-all duration-200 font-normal disabled:opacity-50 flex items-center gap-2 cursor-pointer"
             >
               {isLoading && <div className="spinner w-4 h-4 border-2" />}
               Save Preset

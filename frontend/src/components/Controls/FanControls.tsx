@@ -51,7 +51,9 @@ const FanControls: React.FC = () => {
       <div>
         <div className="flex items-center justify-between mb-[10px]">
           <label>Speed</label>
-          <span className="text-[#99A1AF] text-base font-normal">{speed}%</span>
+          <span className="text-(--text-dark-gray) text-base font-normal">
+            {speed}%
+          </span>
         </div>
         <input
           ref={sliderRef}

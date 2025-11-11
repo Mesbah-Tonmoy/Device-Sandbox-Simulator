@@ -15,9 +15,9 @@ interface DeviceInstanceProps {
 
 const DeviceInstance: React.FC<DeviceInstanceProps> = ({ device }) => {
   return (
-    <div className="flex flex-col items-center justify-center bg-[#10182880] border-2 border-[#1E2939] rounded-[14px]">
+    <div className="flex flex-col items-center justify-center bg-[#10182880] border-2 border-gray-800 dss-rounded px-4">
       {/* Device Visual */}
-      <div className="mb-30 mt-35">
+      <div className="lg:mb-30 lg:mt-35 my-15">
         {device.type === 'light' ? (
           <LightDevice settings={device.settings as LightSettings} />
         ) : (
@@ -26,7 +26,7 @@ const DeviceInstance: React.FC<DeviceInstanceProps> = ({ device }) => {
       </div>
 
       {/* Control Panel */}
-      <div className="control-panel mb-6">
+      <div className="control-panel md:w-[448px] w-full lg:mb-6 mb-4">
         {device.type === 'light' ? <LightControls /> : <FanControls />}
       </div>
     </div>

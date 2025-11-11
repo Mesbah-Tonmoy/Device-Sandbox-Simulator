@@ -9,7 +9,7 @@ function App() {
   return (
     <DndProvider backend={HTML5Backend}>
       <DeviceProvider>
-        <div className="app-container h-screen w-screen flex overflow-auto bg-dark-primary">
+        <div className="h-screen w-screen flex flex-col md:flex-row overflow-auto bg-dark-primary">
           <Sidebar />
 
           <main className="flex-1 flex flex-col">

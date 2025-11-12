@@ -3,7 +3,6 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 import { DeviceProvider } from './context/DeviceContext';
 import Sidebar from './components/Sidebar/Sidebar';
 import Canvas from './components/Canvas/Canvas';
-import Notification from './components/Notification/Notification';
 
 function App() {
   return (
@@ -11,12 +10,7 @@ function App() {
       <DeviceProvider>
         <div className="h-screen w-screen flex flex-col md:flex-row overflow-auto bg-dark-primary">
           <Sidebar />
-
-          <main className="flex-1 flex flex-col">
-            <Canvas />
-          </main>
-
-          <Notification />
+          <Canvas />
         </div>
       </DeviceProvider>
     </DndProvider>

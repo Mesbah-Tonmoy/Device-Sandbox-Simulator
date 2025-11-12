@@ -1,7 +1,3 @@
-/**
- * LightDevice Component - Visual representation of light
- */
-
 import React from 'react';
 import type { LightSettings, ColorTemp } from '../../types';
 import { COLOR_TEMP_CONFIG } from '../../utils/constants';
@@ -19,24 +15,14 @@ const LightDevice: React.FC<LightDeviceProps> = ({ settings }) => {
     return COLOR_TEMP_CONFIG[colorTemp as ColorTemp].className;
   };
 
-  // const getOpacity = (): string => {
-  //   if (!power) return '0';
-  //   return 0.85 + brightness / 667; // Range from 0.85 to 1
-  // };
-
-  // const getFilamentOpacity = (): number => {
-  //   if (!power) return 0;
-  //   return 0.5 + brightness / 200; // Range from 0.5 to 1
-  // };
-
   return (
     <div className="relative flex flex-col items-center">
-      {/* Light Holder/Mount - Improved design */}
+      {/* Light Holder/Mount */}
       <div className="relative mb-2">
         {/* Top cap */}
         <div className="bg-linear-to-b from-[#4A5565] to-[#364153] w-16 h-3 rounded-t-[6px] m-auto" />
 
-        {/* Holder ridges (3 lines) */}
+        {/* Holder ridges */}
         <div>
           <div className="bg-linear-to-b from-[#4A5565] to-[#364153] w-20 h-1 rounded-t-[6px]" />
           <div className="bg-linear-to-b from-[#4A5565] to-[#364153] w-20 h-1 rounded-t-[6px]" />

@@ -1,7 +1,3 @@
-/**
- * FanDevice Component - Visual representation of fan
- */
-
 import React from 'react';
 import type { FanSettings } from '../../types';
 

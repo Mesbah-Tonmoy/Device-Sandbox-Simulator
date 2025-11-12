@@ -7,6 +7,7 @@ import { useDrop } from 'react-dnd';
 import { useDevice } from '../../context/DeviceContext';
 import DeviceInstance from './DeviceInstance';
 import SavePresetModal from '../Modals/SavePresetModal';
+import Notification from '../Notification/Notification';
 import { DND_TYPES } from '../../utils/constants';
 import type { DragItem } from '../../types';
 
@@ -51,23 +52,25 @@ const Canvas: React.FC = () => {
   };
 
   return (
-    <>
+    <div className="flex-1 flex flex-col relative">
       {/* Header with buttons */}
       <header className="flex items-center justify-between px-6 pt-6 pb-4">
-        <h1 className="text-(--text-light-primary) text-lg font-normal">
+        <h1 className="text-(--text-light-primary) text-sm sm:text-base font-normal">
           Testing Canvas
         </h1>
         {currentDevice && (
           <div className="flex gap-3">
             <button
               onClick={handleClear}
-              className="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-(--text-light-gray) rounded-lg border border-gray-700 transition-all duration-200 font-normal disabled:opacity-50 cursor-pointer"
+              disabled={isModalOpen}
+              className="px-3 py-2 bg-gray-800 hover:bg-gray-700 text-sm sm:text-base text-(--text-light-gray) rounded-lg border border-gray-700 transition-all duration-200 font-normal disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
             >
               Clear
             </button>
             <button
               onClick={handleSavePreset}
-              className="px-3 py-2 bg-primary-blue hover:bg-blue-600 text-white rounded-lg transition-all duration-200 font-normal disabled:opacity-50 cursor-pointer"
+              disabled={isModalOpen}
+              className="px-3 py-2 bg-primary-blue hover:bg-blue-600 text-sm sm:text-base text-white rounded-lg transition-all duration-200 font-normal disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
             >
               Save Preset
             </button>
@@ -75,12 +78,15 @@ const Canvas: React.FC = () => {
         )}
       </header>
 
-      {/* Canvas Area */}
+      {/* Canvas Area - Relative positioning for notification and modal */}
       <div
         id="canvas"
         ref={drop as any}
-        className={`flex-1 relative overflow-auto bg-dark-primary transition-colors duration-200 px-6 pb-6 ${isOver ? 'bg-dark-secondary' : ''}`}
+        className={`flex-1 relative ${isModalOpen ? 'overflow-hidden' : 'overflow-auto'} bg-dark-primary transition-colors duration-200 px-6 pb-6 ${isOver ? 'bg-dark-secondary' : ''}`}
       >
+        {/* Notification - Inside Canvas */}
+        <Notification />
+
         {/* Empty State */}
         {!currentDevice && (
           <div className="flex items-center justify-center bg-[#10182880] border-2 border-gray-800 dss-rounded min-h-full">
@@ -92,14 +98,25 @@ const Canvas: React.FC = () => {
 
         {/* Device Instance */}
         {currentDevice && <DeviceInstance device={currentDevice} />}
-      </div>
 
-      {/* Save Preset Modal */}
-      <SavePresetModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-      />
-    </>
+        {/* Modal Overlay - Only covers canvas */}
+        {isModalOpen && (
+          <div className="absolute inset-0 z-40 h-screen flex items-center justify-center">
+            {/* Backdrop - Only canvas area */}
+            <div
+              className="absolute inset-0 bg-[#0A101DE5] backdrop-blur-[11px]"
+              onClick={() => setIsModalOpen(false)}
+            />
+
+            {/* Modal Content */}
+            <SavePresetModal
+              isOpen={isModalOpen}
+              onClose={() => setIsModalOpen(false)}
+            />
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

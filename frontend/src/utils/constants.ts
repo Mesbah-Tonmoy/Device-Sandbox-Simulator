@@ -80,12 +80,12 @@ export const DEFAULT_DEVICE_SETTINGS: {
   fan: FanSettings;
 } = {
   light: {
-    power: true,
-    brightness: 70,
+    power: false,
+    brightness: 0,
     colorTemp: 'warm',
   },
   fan: {
-    power: true,
+    power: false,
     speed: 50,
   },
 };

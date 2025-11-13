@@ -5,6 +5,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useDevice } from '../../context/DeviceContext';
 import type { FanSettings } from '../../types';
+import { VALIDATION } from '../../utils/constants';
 
 const FanControls: React.FC = () => {
   const { currentDevice, updateDevice } = useDevice();
@@ -27,8 +28,17 @@ const FanControls: React.FC = () => {
   };
 
   const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newSpeed = parseInt(e.target.value);
-    updateDevice({ speed: newSpeed });
+    const value = parseInt(e.target.value);
+
+    // Input constraint: Ensure value is within valid range
+    if (isNaN(value)) return;
+
+    const constrainedValue = Math.max(
+      VALIDATION.SPEED.MIN,
+      Math.min(VALIDATION.SPEED.MAX, value)
+    );
+
+    updateDevice({ speed: constrainedValue });
   };
 
   return (
@@ -58,8 +68,8 @@ const FanControls: React.FC = () => {
         <input
           ref={sliderRef}
           type="range"
-          min="0"
-          max="100"
+          min={VALIDATION.SPEED.MIN}
+          max={VALIDATION.SPEED.MAX}
           value={speed}
           onChange={handleSpeedChange}
           disabled={!power}

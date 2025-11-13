@@ -2,7 +2,7 @@
  * DeviceItem Component - Draggable device in sidebar
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDrag } from 'react-dnd';
 import { useDevice } from '../../context/DeviceContext';
 import type { DeviceType } from '../../types';
@@ -12,18 +12,32 @@ import Fan from '../Icons/Fan';
 
 interface DeviceItemProps {
   type: DeviceType;
+  onSelect?: () => void;
 }
 
-const DeviceItem: React.FC<DeviceItemProps> = ({ type }) => {
+const DeviceItem: React.FC<DeviceItemProps> = ({ type, onSelect }) => {
   const { currentDevice } = useDevice();
 
-  const [{ isDragging }, drag] = useDrag(() => ({
+  const [{ isDragging }, drag] = useDrag({
     type: DND_TYPES.DEVICE,
     item: { type: DND_TYPES.DEVICE, deviceType: type },
+    end: (_, monitor) => {
+      // Close mobile sidebar after successful drop
+      if (monitor.didDrop() && onSelect) {
+        onSelect();
+      }
+    },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
-  }));
+  });
+
+  // Close sidebar when dragging starts
+  useEffect(() => {
+    if (isDragging && onSelect) {
+      onSelect();
+    }
+  }, [isDragging, onSelect]);
 
   // Check if this device type is currently on canvas
   const isSelected = currentDevice !== null && currentDevice.type === type;

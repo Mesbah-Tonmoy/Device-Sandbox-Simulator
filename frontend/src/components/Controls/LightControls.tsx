@@ -5,7 +5,7 @@
 import React, { useEffect, useRef } from 'react';
 import { useDevice } from '../../context/DeviceContext';
 import type { LightSettings, ColorTemp } from '../../types';
-import { COLOR_TEMP_CONFIG } from '../../utils/constants';
+import { COLOR_TEMP_CONFIG, VALIDATION } from '../../utils/constants';
 
 const LightControls: React.FC = () => {
   const { currentDevice, updateDevice } = useDevice();
@@ -28,8 +28,17 @@ const LightControls: React.FC = () => {
   };
 
   const handleBrightnessChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newBrightness = parseInt(e.target.value);
-    updateDevice({ brightness: newBrightness });
+    const value = parseInt(e.target.value);
+
+    // Input constraint: Ensure value is within valid range
+    if (isNaN(value)) return;
+
+    const constrainedValue = Math.max(
+      VALIDATION.BRIGHTNESS.MIN,
+      Math.min(VALIDATION.BRIGHTNESS.MAX, value)
+    );
+
+    updateDevice({ brightness: constrainedValue });
   };
 
   const handleColorTempChange = (newColorTemp: ColorTemp) => {
@@ -61,7 +70,7 @@ const LightControls: React.FC = () => {
               key={key}
               onClick={() => handleColorTempChange(key as ColorTemp)}
               className={`
-                color-temp-option w-[93.5px] h-12 rounded-xl border-2 border-gray-600 transition-all duration-200 ${config.bgClass}
+                color-temp-option max-w-[93.5px] w-full h-12 rounded-xl border-2 border-gray-600 transition-all duration-200 ${config.bgClass}
                 ${colorTemp === key ? 'selected' : ''}
                 ${!power ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'}
               `}
@@ -83,8 +92,8 @@ const LightControls: React.FC = () => {
         <input
           ref={sliderRef}
           type="range"
-          min="0"
-          max="100"
+          min={VALIDATION.BRIGHTNESS.MIN}
+          max={VALIDATION.BRIGHTNESS.MAX}
           value={brightness}
           onChange={handleBrightnessChange}
           disabled={!power}

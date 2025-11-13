@@ -7,18 +7,18 @@ const XMark = () => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <g clip-path="url(#clip0_16_270)">
+      <g clipPath="url(#clip0_16_270)">
         <path
           d="M12.5 3.5L3.5 12.5"
           stroke="#E5E7EB"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="M12.5 12.5L3.5 3.5"
           stroke="#E5E7EB"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </g>
       <defs>

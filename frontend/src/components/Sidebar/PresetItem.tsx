@@ -2,7 +2,7 @@
  * PresetItem Component - Draggable preset in sidebar
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDrag } from 'react-dnd';
 import type { Preset } from '../../types';
 import { DND_TYPES } from '../../utils/constants';
@@ -11,16 +11,30 @@ import Fan from '../Icons/Fan';
 
 interface PresetItemProps {
   preset: Preset;
+  onSelect?: () => void;
 }
 
-const PresetItem: React.FC<PresetItemProps> = ({ preset }) => {
+const PresetItem: React.FC<PresetItemProps> = ({ preset, onSelect }) => {
   const [{ isDragging }, drag] = useDrag(() => ({
     type: DND_TYPES.PRESET,
     item: { type: DND_TYPES.PRESET, preset },
+    end: (_, monitor) => {
+      // Close mobile sidebar after successful drop
+      if (monitor.didDrop() && onSelect) {
+        onSelect();
+      }
+    },
     collect: (monitor) => ({
       isDragging: !!monitor.isDragging(),
     }),
   }));
+
+  // Close sidebar when dragging starts
+  useEffect(() => {
+    if (isDragging && onSelect) {
+      onSelect();
+    }
+  }, [isDragging, onSelect]);
 
   return (
     <div

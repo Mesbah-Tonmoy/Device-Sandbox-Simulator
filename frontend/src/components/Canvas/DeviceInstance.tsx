@@ -26,7 +26,7 @@ const DeviceInstance: React.FC<DeviceInstanceProps> = ({ device }) => {
       </div>
 
       {/* Control Panel */}
-      <div className="control-panel md:w-[448px] w-full lg:mb-6 mb-4">
+      <div className="control-panel max-w-[448px] w-full lg:mb-6 mb-4">
         {device.type === 'light' ? <LightControls /> : <FanControls />}
       </div>
     </div>

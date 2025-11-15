@@ -18,9 +18,23 @@ interface CanvasProps {
 }
 
 const Canvas: React.FC<CanvasProps> = ({ onToggleSidebar }) => {
-  const { currentDevice, addDevice, loadPreset, removeDevice } = useDevice();
+  const {
+    currentDevice,
+    addDevice,
+    loadPreset,
+    removeDevice,
+    loadedPresetSettings,
+  } = useDevice();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Check if current device settings match loaded preset settings
+  const isPresetUnchanged = Boolean(
+    currentDevice &&
+    loadedPresetSettings &&
+    JSON.stringify(currentDevice.settings) ===
+      JSON.stringify(loadedPresetSettings)
+  );
 
   const [{ isOver }, drop] = useDrop(() => ({
     accept: [DND_TYPES.DEVICE, DND_TYPES.PRESET],
@@ -98,7 +112,7 @@ const Canvas: React.FC<CanvasProps> = ({ onToggleSidebar }) => {
               </button>
               <button
                 onClick={handleSavePreset}
-                disabled={isModalOpen}
+                disabled={isModalOpen || isPresetUnchanged}
                 className="px-3 py-2 bg-primary-blue hover:bg-blue-600 text-sm sm:text-base text-white rounded-lg transition-all duration-200 font-normal disabled:opacity-50 cursor-pointer disabled:cursor-not-allowed"
               >
                 Save Preset
@@ -109,7 +123,8 @@ const Canvas: React.FC<CanvasProps> = ({ onToggleSidebar }) => {
             <div className="md:hidden relative">
               <button
                 onClick={toggleMobileMenu}
-                className="text-white hover:text-gray-300 transition-colors p-2 cursor-pointer"
+                disabled={isModalOpen}
+                className="text-white hover:text-gray-300 transition-colors p-2 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Menu"
               >
                 <Ellipsis />
@@ -134,7 +149,8 @@ const Canvas: React.FC<CanvasProps> = ({ onToggleSidebar }) => {
                     </button>
                     <button
                       onClick={handleSavePreset}
-                      className="w-full text-left px-4 py-3 text-(--text-light-gray) hover:bg-gray-700 transition-colors border-t border-gray-700 cursor-pointer"
+                      disabled={isPresetUnchanged}
+                      className="w-full text-left px-4 py-3 text-(--text-light-gray) hover:bg-gray-700 transition-colors border-t border-gray-700 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Save Preset
                     </button>

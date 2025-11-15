@@ -51,8 +51,10 @@ const SavePresetModal: React.FC<SavePresetModalProps> = ({
     try {
       await saveAsPreset(presetName.trim());
       onClose();
-    } catch (err) {
-      setError('Failed to save preset. Please try again.');
+    } catch (err: any) {
+      // Handle API error message
+      const errorMessage = err?.message || err?.error || 'Failed to save preset. Please try again.';
+      setError(errorMessage);
     } finally {
       setIsLoading(false);
     }

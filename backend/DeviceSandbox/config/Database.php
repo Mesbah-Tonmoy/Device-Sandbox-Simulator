@@ -5,6 +5,12 @@
  * Singleton pattern for single connection instance
  */
 
+namespace DeviceSandbox\Config;
+
+use PDO;
+use PDOException;
+use Exception;
+
 class Database {
     private static $instance = null;
     private $connection;
@@ -58,15 +64,15 @@ class Database {
             $dsn = "mysql:host={$this->host};port={$this->port};dbname={$this->db_name};charset=utf8mb4";
             
             $options = [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-                PDO::ATTR_EMULATE_PREPARES => false,
-                PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                \PDO::ATTR_EMULATE_PREPARES => false,
+                \PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci"
             ];
             
-            $this->connection = new PDO($dsn, $this->username, $this->password, $options);
+            $this->connection = new \PDO($dsn, $this->username, $this->password, $options);
             
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             $this->handleConnectionError($e);
         }
     }

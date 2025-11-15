@@ -4,7 +4,9 @@
  * Handles all database operations for devices
  */
 
-require_once __DIR__ . '/../config/Database.php';
+namespace DeviceSandbox\Models;
+
+use DeviceSandbox\Config\Database;
 
 class Device {
     private $conn;

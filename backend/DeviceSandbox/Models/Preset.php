@@ -4,7 +4,11 @@
  * Handles all database operations for presets
  */
 
-require_once __DIR__ . '/../config/Database.php';
+namespace DeviceSandbox\Models;
+
+use PDO;
+use PDOException;
+use DeviceSandbox\Config\Database;
 
 class Preset {
     private $conn;

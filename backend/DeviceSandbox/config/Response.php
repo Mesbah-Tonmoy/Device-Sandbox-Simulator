@@ -1,11 +1,14 @@
 <?php
 
-class Response {
-    
+namespace DeviceSandbox\Config;
+
+class Response
+{
     /**
      * Send success response
      */
-    public static function success($data = null, $message = 'Success', $statusCode = 200) {
+    public static function success($data = null, string $message = 'Success', int $statusCode = 200): void
+    {
         http_response_code($statusCode);
         
         $response = [
@@ -24,7 +27,8 @@ class Response {
     /**
      * Send error response
      */
-    public static function error($message = 'An error occurred', $statusCode = 400, $errors = null) {
+    public static function error(string $message = 'An error occurred', int $statusCode = 400, $errors = null): void
+    {
         http_response_code($statusCode);
         
         $response = [
@@ -48,35 +52,40 @@ class Response {
     /**
      * Send validation error response
      */
-    public static function validationError($errors, $message = 'Validation failed') {
+    public static function validationError($errors, string $message = 'Validation failed'): void
+    {
         self::error($message, 422, $errors);
     }
     
     /**
      * Send not found response
      */
-    public static function notFound($message = 'Resource not found') {
+    public static function notFound(string $message = 'Resource not found'): void
+    {
         self::error($message, 404);
     }
     
     /**
      * Send unauthorized response
      */
-    public static function unauthorized($message = 'Unauthorized access') {
+    public static function unauthorized(string $message = 'Unauthorized access'): void
+    {
         self::error($message, 401);
     }
     
     /**
      * Send server error response
      */
-    public static function serverError($message = 'Internal server error') {
+    public static function serverError(string $message = 'Internal server error'): void
+    {
         self::error($message, 500);
     }
     
     /**
      * Validate request method
      */
-    public static function validateMethod($allowedMethods) {
+    public static function validateMethod(array $allowedMethods): void
+    {
         $requestMethod = $_SERVER['REQUEST_METHOD'];
         
         if (!in_array($requestMethod, $allowedMethods)) {
@@ -90,7 +99,8 @@ class Response {
     /**
      * Get JSON input from request body
      */
-    public static function getJsonInput() {
+    public static function getJsonInput(): array
+    {
         $input = file_get_contents('php://input');
         $data = json_decode($input, true);
         
@@ -98,17 +108,22 @@ class Response {
             self::error('Invalid JSON format', 400);
         }
         
-        return $data;
+        return $data ?? [];
     }
     
     /**
      * Sanitize input data
      */
-    public static function sanitize($data) {
+    public static function sanitize($data)
+    {
         if (is_array($data)) {
             return array_map([self::class, 'sanitize'], $data);
         }
         
-        return htmlspecialchars(strip_tags(trim($data)), ENT_QUOTES, 'UTF-8');
+        if (is_string($data)) {
+            return htmlspecialchars(strip_tags(trim($data)), ENT_QUOTES, 'UTF-8');
+        }
+        
+        return $data;
     }
 }

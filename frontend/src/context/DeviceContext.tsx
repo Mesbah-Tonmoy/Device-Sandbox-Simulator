@@ -48,6 +48,7 @@ export const DeviceProvider: React.FC<DeviceProviderProps> = ({ children }) => {
   const [presets, setPresets] = useState<Preset[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [notification, setNotification] = useState<Notification | null>(null);
+  const [loadedPresetSettings, setLoadedPresetSettings] = useState<DeviceSettings | null>(null);
 
   const showNotification = useCallback(
     (message: string, type: NotificationType = NOTIFICATION_TYPES.SUCCESS) => {
@@ -107,6 +108,8 @@ export const DeviceProvider: React.FC<DeviceProviderProps> = ({ children }) => {
         const response = await deviceAPI.save(deviceData);
         if (response.success && response.data) {
           setCurrentDevice(response.data);
+          // Clear loaded preset tracking when adding new device
+          setLoadedPresetSettings(null);
           return response.data;
         }
       } catch (error) {
@@ -229,6 +232,8 @@ export const DeviceProvider: React.FC<DeviceProviderProps> = ({ children }) => {
         const response = await deviceAPI.save(deviceData);
         if (response.success && response.data) {
           setCurrentDevice(response.data);
+          // Track the loaded preset settings for comparison
+          setLoadedPresetSettings(preset.device_settings);
           showNotification(
             SUCCESS_MESSAGES.PRESET_LOADED,
             NOTIFICATION_TYPES.SUCCESS
@@ -266,6 +271,7 @@ export const DeviceProvider: React.FC<DeviceProviderProps> = ({ children }) => {
     presets,
     loading,
     notification,
+    loadedPresetSettings,
     addDevice,
     updateDevice,
     updateDevicePosition,

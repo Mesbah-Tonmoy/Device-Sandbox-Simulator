@@ -44,7 +44,7 @@ COMMENT='Stores current active device on canvas';
 -- =====================================================
 CREATE TABLE presets (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL COMMENT 'Preset name given by user',
+    name VARCHAR(100) NOT NULL UNIQUE COMMENT 'Preset name given by user (must be unique)',
     device_type ENUM('light', 'fan') NOT NULL COMMENT 'Type of device in preset',
     device_settings JSON NOT NULL COMMENT 'Complete device configuration',
     position_x SMALLINT NOT NULL DEFAULT 0 COMMENT 'Saved X coordinate',
@@ -52,7 +52,7 @@ CREATE TABLE presets (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
     -- Indexes
-    INDEX idx_name (name),
+    UNIQUE INDEX idx_name_unique (name),
     INDEX idx_device_type (device_type),
     INDEX idx_created_at (created_at),
     
@@ -68,18 +68,6 @@ CREATE TABLE presets (
 DEFAULT CHARSET=utf8mb4 
 COLLATE=utf8mb4_unicode_ci
 COMMENT='Stores user-saved device presets';
-
--- =====================================================
--- SAMPLE DATA (for testing)
--- =====================================================
-
--- Insert sample presets
-INSERT INTO presets (name, device_type, device_settings, position_x, position_y) VALUES
-('Light 3', 'light', '{"power": true, "colorTemp": "warm", "brightness": 75}', 640, 350),
-('Light 4', 'light', '{"power": true, "colorTemp": "cool", "brightness": 90}', 640, 350),
-('Fan 5', 'fan', '{"power": true, "speed": 50}', 640, 350),
-('Fan 6', 'fan', '{"power": true, "speed": 80}', 640, 350),
-('Fan 7', 'fan', '{"power": true, "speed": 30}', 640, 350);
 
 -- =====================================================
 -- USEFUL QUERIES (for reference)

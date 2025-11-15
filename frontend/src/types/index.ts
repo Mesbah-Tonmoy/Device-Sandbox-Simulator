@@ -90,6 +90,7 @@ export interface DeviceContextState {
   presets: Preset[];
   loading: boolean;
   notification: Notification | null;
+  loadedPresetSettings: DeviceSettings | null;
   addDevice: (
     type: DeviceType,
     position?: Position

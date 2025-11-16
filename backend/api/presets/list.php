@@ -7,14 +7,11 @@
 require_once __DIR__ . '/../../config/cors.php';
 require_once __DIR__ . '/../../config/Autoloader.php';
 
+use DeviceSandbox\Controllers\BaseController;
 use DeviceSandbox\Config\Response;
 use DeviceSandbox\Models\Preset;
 
-// Validate method
-Response::validateMethod(['GET']);
-
-try {
-    // Create preset instance
+BaseController::execute(function() {
     $preset = new Preset();
     
     // Check for query parameters
@@ -30,14 +27,17 @@ try {
         $presets = $preset->getAll();
     }
     
+    // Decode settings for each preset (if needed)
+    foreach ($presets as &$preset) {  // Use reference (&) to modify in place
+        if (is_string($preset['device_settings'])) {
+            $preset['device_settings'] = json_decode($preset['device_settings'], true);
+        }
+    }
+    
     Response::success(
         $presets,
         count($presets) > 0 
             ? 'Presets retrieved successfully' 
             : 'No presets found'
     );
-    
-} catch (Exception $e) {
-    $GLOBALS['last_error'] = $e->getMessage();
-    Response::serverError('An unexpected error occurred');
-}
+}, ['GET']);

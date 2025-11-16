@@ -7,36 +7,31 @@
 require_once __DIR__ . '/../../config/cors.php';
 require_once __DIR__ . '/../../config/Autoloader.php';
 
+use DeviceSandbox\Controllers\BaseController;
 use DeviceSandbox\Config\Response;
 use DeviceSandbox\Models\Preset;
 
-// Validate method
-Response::validateMethod(['GET']);
-
-try {
-    // Get preset ID from query parameter
+BaseController::execute(function() {
     $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
     
     if ($id <= 0) {
         Response::error('Invalid preset ID', 400);
+        return;
     }
     
-    // Create preset instance
     $preset = new Preset();
-    
-    // Get preset by ID
     $presetData = $preset->getById($id);
     
     if ($presetData) {
+        if (is_string($presetData['device_settings'])) {
+            $presetData['device_settings'] = json_decode($presetData['device_settings'], true);
+        }
+        
         Response::success(
             $presetData,
             'Preset retrieved successfully'
         );
     } else {
-        Response::notFound('Preset not found');
+        Response::error('Preset not found', 404);
     }
-    
-} catch (Exception $e) {
-    $GLOBALS['last_error'] = $e->getMessage();
-    Response::serverError('An unexpected error occurred');
-}
+}, ['GET']);

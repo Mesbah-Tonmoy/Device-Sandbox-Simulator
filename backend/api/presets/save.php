@@ -7,14 +7,11 @@
 require_once __DIR__ . '/../../config/cors.php';
 require_once __DIR__ . '/../../config/Autoloader.php';
 
+use DeviceSandbox\Controllers\BaseController;
 use DeviceSandbox\Config\Response;
 use DeviceSandbox\Models\Preset;
 
-// Validate method
-Response::validateMethod(['POST']);
-
-try {
-    // Get JSON input
+BaseController::execute(function() {
     $input = Response::getJsonInput();
     
     // Sanitize input
@@ -32,24 +29,9 @@ try {
     $preset->position_x = $position_x;
     $preset->position_y = $position_y;
     
-    // Save preset
-    $result = $preset->create();
-    
-    if ($result['success']) {
-        Response::success(
-            $result['data'],
-            'Preset saved successfully',
-            201
-        );
-    } else {
-        if (isset($result['errors'])) {
-            Response::validationError($result['errors']);
-        } else {
-            Response::error($result['error'] ?? 'Failed to save preset');
-        }
-    }
-    
-} catch (Exception $e) {
-    $GLOBALS['last_error'] = $e->getMessage();
-    Response::serverError('An unexpected error occurred');
-}
+    BaseController::handleResult(
+        $preset->create(),
+        'Preset saved successfully',
+        201
+    );
+}, ['POST']);

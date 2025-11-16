@@ -7,7 +7,7 @@ class Response
     /**
      * Send success response
      */
-    public static function success($data = null, string $message = 'Success', int $statusCode = 200): void
+    public static function success(mixed $data = null, string $message = 'Success', int $statusCode = 200): never
     {
         http_response_code($statusCode);
         
@@ -20,14 +20,14 @@ class Response
             $response['data'] = $data;
         }
         
-        echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        exit();
+        echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+        exit;
     }
     
     /**
      * Send error response
      */
-    public static function error(string $message = 'An error occurred', int $statusCode = 400, $errors = null): void
+    public static function error(string $message = 'An error occurred', int $statusCode = 400, mixed $errors = null, ?string $debug = null): never
     {
         http_response_code($statusCode);
         
@@ -40,45 +40,30 @@ class Response
             $response['errors'] = $errors;
         }
         
-        // Add debug info in development
-        if (($_ENV['APP_DEBUG'] ?? 'false') === 'true' && isset($GLOBALS['last_error'])) {
-            $response['debug'] = $GLOBALS['last_error'];
+        // Add debug info in development (use param or global)
+        $isDebug = getenv('APP_DEBUG') === 'true';
+        if ($isDebug && ($debug ?? $GLOBALS['last_error'] ?? null)) {
+            $response['debug'] = $debug ?? $GLOBALS['last_error'];
         }
         
-        echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        exit();
+        echo json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR);
+        exit;
     }
     
     /**
      * Send validation error response
      */
-    public static function validationError($errors, string $message = 'Validation failed'): void
+    public static function validationError(mixed $errors, string $message = 'Validation failed'): never
     {
         self::error($message, 422, $errors);
     }
     
     /**
-     * Send not found response
-     */
-    public static function notFound(string $message = 'Resource not found'): void
-    {
-        self::error($message, 404);
-    }
-    
-    /**
-     * Send unauthorized response
-     */
-    public static function unauthorized(string $message = 'Unauthorized access'): void
-    {
-        self::error($message, 401);
-    }
-    
-    /**
      * Send server error response
      */
-    public static function serverError(string $message = 'Internal server error'): void
+    public static function serverError(string $message = 'Internal server error', ?string $debug = null): never
     {
-        self::error($message, 500);
+        self::error($message, 500, null, $debug);
     }
     
     /**
@@ -86,9 +71,9 @@ class Response
      */
     public static function validateMethod(array $allowedMethods): void
     {
-        $requestMethod = $_SERVER['REQUEST_METHOD'];
+        $requestMethod = $_SERVER['REQUEST_METHOD'] ?? 'GET';
         
-        if (!in_array($requestMethod, $allowedMethods)) {
+        if (!in_array($requestMethod, $allowedMethods, true)) {
             self::error(
                 "Method {$requestMethod} not allowed. Allowed methods: " . implode(', ', $allowedMethods),
                 405
@@ -102,22 +87,18 @@ class Response
     public static function getJsonInput(): array
     {
         $input = file_get_contents('php://input');
-        $data = json_decode($input, true);
-        
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            self::error('Invalid JSON format', 400);
-        }
+        $data = json_decode($input, true, 512, JSON_THROW_ON_ERROR);
         
         return $data ?? [];
     }
     
     /**
-     * Sanitize input data
+     * Sanitize input data (HTML escaping for strings, recursive for arrays)
      */
-    public static function sanitize($data)
+    public static function sanitize(mixed $data): mixed
     {
         if (is_array($data)) {
-            return array_map([self::class, 'sanitize'], $data);
+            return array_map(self::sanitize(...), $data);
         }
         
         if (is_string($data)) {

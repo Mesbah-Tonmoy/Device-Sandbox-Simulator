@@ -2,38 +2,35 @@
 /**
  * Device Model
  * Handles all database operations for devices
+ * PHP 8.4 Compatible with modern features
  */
 
 namespace DeviceSandbox\Models;
 
-use DeviceSandbox\Config\Database;
+use DeviceSandbox\Traits\ValidatesDeviceSettings;
+use PDO;
 
-class Device {
-    private $conn;
-    private $table = 'devices';
+class Device extends BaseModel
+{
+    use ValidatesDeviceSettings;
     
-    // Device properties
-    public $id;
-    public $type;
-    public $settings;
-    public $position_x;
-    public $position_y;
-    public $created_at;
-    public $updated_at;
+    // Using PHP 8.1+ property types
+    public ?int $id = null;
+    public string $type = '';
+    public string $settings = '';
+    public int $position_x = 0;
+    public int $position_y = 0;
+    public ?string $created_at = null;
+    public ?string $updated_at = null;
     
-    // Valid device types
-    private $validTypes = ['light', 'fan'];
-    
-    public function __construct() {
-        $database = Database::getInstance();
-        $this->conn = $database->getConnection();
-    }
+    protected string $table = 'devices';
     
     /**
      * Get current device on canvas
      * Returns the most recently updated device (only one should exist)
      */
-    public function getCurrent() {
+    public function getCurrent(): array|false
+    {
         $query = "SELECT * FROM {$this->table} 
                   ORDER BY updated_at DESC 
                   LIMIT 1";
@@ -41,14 +38,21 @@ class Device {
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
         
-        return $stmt->fetch();
+        $device = $stmt->fetch();
+        
+        if ($device) {
+            $device['settings'] = json_decode($device['settings'], true);
+        }
+        
+        return $device;
     }
     
     /**
      * Save or update device
      * Since only one device can exist, we delete old ones and insert new
      */
-    public function save() {
+    public function save(): array
+    {
         // Validate before saving
         $validation = $this->validate();
         if (!$validation['valid']) {
@@ -72,11 +76,11 @@ class Device {
             // Bind parameters
             $stmt->bindParam(':type', $this->type);
             $stmt->bindParam(':settings', $this->settings);
-            $stmt->bindParam(':position_x', $this->position_x);
-            $stmt->bindParam(':position_y', $this->position_y);
+            $stmt->bindParam(':position_x', $this->position_x, PDO::PARAM_INT);
+            $stmt->bindParam(':position_y', $this->position_y, PDO::PARAM_INT);
             
             $stmt->execute();
-            $this->id = $this->conn->lastInsertId();
+            $this->id = (int) $this->conn->lastInsertId();
             
             $this->conn->commit();
             
@@ -91,7 +95,7 @@ class Device {
                 ]
             ];
             
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             $this->conn->rollBack();
             $GLOBALS['last_error'] = $e->getMessage();
             return ['success' => false, 'error' => 'Database error occurred'];
@@ -101,7 +105,8 @@ class Device {
     /**
      * Delete current device (clear canvas)
      */
-    public function delete() {
+    public function delete(int $id = 0): array
+    {
         try {
             $query = "DELETE FROM {$this->table}";
             $stmt = $this->conn->prepare($query);
@@ -112,7 +117,7 @@ class Device {
                 'message' => 'Device removed from canvas'
             ];
             
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             $GLOBALS['last_error'] = $e->getMessage();
             return ['success' => false, 'error' => 'Failed to delete device'];
         }
@@ -120,15 +125,16 @@ class Device {
     
     /**
      * Validate device data
+     * Uses ValidatesDeviceSettings trait for shared validation logic
      */
-    private function validate() {
+    public function validate(): array
+    {
         $errors = [];
         
-        // Validate type
-        if (empty($this->type)) {
-            $errors['type'] = 'Device type is required';
-        } elseif (!in_array($this->type, $this->validTypes)) {
-            $errors['type'] = 'Invalid device type. Must be light or fan';
+        // Validate device type (from trait)
+        $typeError = $this->validateDeviceType($this->type);
+        if ($typeError) {
+            $errors['type'] = $typeError;
         }
         
         // Validate settings JSON
@@ -139,66 +145,17 @@ class Device {
             if (json_last_error() !== JSON_ERROR_NONE) {
                 $errors['settings'] = 'Invalid settings JSON format';
             } else {
-                // Validate settings structure based on type
-                $settingsValidation = $this->validateSettings($settingsData);
+                // Validate settings structure (from trait)
+                $settingsValidation = $this->validateSettings($this->type, $settingsData);
                 if (!$settingsValidation['valid']) {
-                    $errors['settings'] = $settingsValidation['errors'];
+                    $errors = array_merge($errors, $settingsValidation['errors']);
                 }
             }
         }
         
-        // Validate position
-        if (!is_numeric($this->position_x) || $this->position_x < 0 || $this->position_x > 10000) {
-            $errors['position_x'] = 'Invalid X position (must be 0-10000)';
-        }
-        
-        if (!is_numeric($this->position_y) || $this->position_y < 0 || $this->position_y > 10000) {
-            $errors['position_y'] = 'Invalid Y position (must be 0-10000)';
-        }
-        
-        return [
-            'valid' => empty($errors),
-            'errors' => $errors
-        ];
-    }
-    
-    /**
-     * Validate settings structure based on device type
-     */
-    private function validateSettings($settings) {
-        $errors = [];
-        
-        if ($this->type === 'light') {
-            // Validate light settings
-            if (!isset($settings['power']) || !is_bool($settings['power'])) {
-                $errors['power'] = 'Light power must be boolean';
-            }
-            
-            if (!isset($settings['brightness']) || 
-                !is_numeric($settings['brightness']) || 
-                $settings['brightness'] < 0 || 
-                $settings['brightness'] > 100) {
-                $errors['brightness'] = 'Light brightness must be 0-100';
-            }
-            
-            $validColors = ['warm', 'neutral', 'cool', 'pink'];
-            if (!isset($settings['colorTemp']) || !in_array($settings['colorTemp'], $validColors)) {
-                $errors['colorTemp'] = 'Invalid color temperature';
-            }
-            
-        } elseif ($this->type === 'fan') {
-            // Validate fan settings
-            if (!isset($settings['power']) || !is_bool($settings['power'])) {
-                $errors['power'] = 'Fan power must be boolean';
-            }
-            
-            if (!isset($settings['speed']) || 
-                !is_numeric($settings['speed']) || 
-                $settings['speed'] < 0 || 
-                $settings['speed'] > 100) {
-                $errors['speed'] = 'Fan speed must be 0-100';
-            }
-        }
+        // Validate position (from trait)
+        $positionErrors = $this->validatePosition($this->position_x, $this->position_y);
+        $errors = array_merge($errors, $positionErrors);
         
         return [
             'valid' => empty($errors),

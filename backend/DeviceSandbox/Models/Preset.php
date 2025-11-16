@@ -2,39 +2,34 @@
 /**
  * Preset Model
  * Handles all database operations for presets
+ * PHP 8.4 Compatible with modern features
  */
 
 namespace DeviceSandbox\Models;
 
+use DeviceSandbox\Traits\ValidatesDeviceSettings;
 use PDO;
-use PDOException;
-use DeviceSandbox\Config\Database;
 
-class Preset {
-    private $conn;
-    private $table = 'presets';
+class Preset extends BaseModel
+{
+    use ValidatesDeviceSettings;
     
-    // Preset properties
-    public $id;
-    public $name;
-    public $device_type;
-    public $device_settings;
-    public $position_x;
-    public $position_y;
-    public $created_at;
+    // Using PHP 8.1+ property types
+    public ?int $id = null;
+    public string $name = '';
+    public string $device_type = '';
+    public string $device_settings = '';
+    public int $position_x = 0;
+    public int $position_y = 0;
+    public ?string $created_at = null;
     
-    // Valid device types
-    private $validTypes = ['light', 'fan'];
-    
-    public function __construct() {
-        $database = Database::getInstance();
-        $this->conn = $database->getConnection();
-    }
+    protected string $table = 'presets';
     
     /**
      * Get all presets ordered by creation date (newest first)
      */
-    public function getAll() {
+    public function getAll(): array
+    {
         $query = "SELECT id, name, device_type, device_settings, 
                          position_x, position_y, created_at 
                   FROM {$this->table} 
@@ -56,7 +51,8 @@ class Preset {
     /**
      * Get a single preset by ID
      */
-    public function getById($id) {
+    public function getById(int $id): array|false
+    {
         $query = "SELECT id, name, device_type, device_settings, 
                          position_x, position_y, created_at 
                   FROM {$this->table} 
@@ -77,13 +73,45 @@ class Preset {
     }
     
     /**
+     * Check if preset name already exists
+     */
+    private function nameExists(string $name, ?int $excludeId = null): bool
+    {
+        $query = "SELECT COUNT(*) FROM {$this->table} WHERE name = :name";
+        
+        if ($excludeId !== null) {
+            $query .= " AND id != :id";
+        }
+        
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':name', $name);
+        
+        if ($excludeId !== null) {
+            $stmt->bindParam(':id', $excludeId, PDO::PARAM_INT);
+        }
+        
+        $stmt->execute();
+        
+        return $stmt->fetchColumn() > 0;
+    }
+    
+    /**
      * Create a new preset
      */
-    public function create() {
+    public function create(): array
+    {
         // Validate before creating
         $validation = $this->validate();
         if (!$validation['valid']) {
             return ['success' => false, 'errors' => $validation['errors']];
+        }
+        
+        // Check for duplicate name
+        if ($this->nameExists($this->name)) {
+            return [
+                'success' => false, 
+                'error' => 'A preset with this name already exists. Please choose a different name.'
+            ];
         }
         
         try {
@@ -97,11 +125,11 @@ class Preset {
             $stmt->bindParam(':name', $this->name);
             $stmt->bindParam(':device_type', $this->device_type);
             $stmt->bindParam(':device_settings', $this->device_settings);
-            $stmt->bindParam(':position_x', $this->position_x);
-            $stmt->bindParam(':position_y', $this->position_y);
+            $stmt->bindParam(':position_x', $this->position_x, PDO::PARAM_INT);
+            $stmt->bindParam(':position_y', $this->position_y, PDO::PARAM_INT);
             
             $stmt->execute();
-            $this->id = $this->conn->lastInsertId();
+            $this->id = (int) $this->conn->lastInsertId();
             
             return [
                 'success' => true,
@@ -115,14 +143,14 @@ class Preset {
                 ]
             ];
             
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             $GLOBALS['last_error'] = $e->getMessage();
             
-            // Check for duplicate name
+            // Check for unique constraint violation
             if ($e->getCode() == 23000) {
                 return [
                     'success' => false, 
-                    'error' => 'A preset with this name already exists'
+                    'error' => 'A preset with this name already exists. Please choose a different name.'
                 ];
             }
             
@@ -133,7 +161,8 @@ class Preset {
     /**
      * Delete a preset by ID
      */
-    public function delete($id) {
+    public function delete(int $id): array
+    {
         try {
             $query = "DELETE FROM {$this->table} WHERE id = :id";
             $stmt = $this->conn->prepare($query);
@@ -153,7 +182,7 @@ class Preset {
                 ];
             }
             
-        } catch (PDOException $e) {
+        } catch (\PDOException $e) {
             $GLOBALS['last_error'] = $e->getMessage();
             return ['success' => false, 'error' => 'Failed to delete preset'];
         }
@@ -162,7 +191,8 @@ class Preset {
     /**
      * Search presets by name
      */
-    public function searchByName($searchTerm) {
+    public function searchByName(string $searchTerm): array
+    {
         $query = "SELECT id, name, device_type, device_settings, 
                          position_x, position_y, created_at 
                   FROM {$this->table} 
@@ -187,7 +217,8 @@ class Preset {
     /**
      * Get presets by device type
      */
-    public function getByType($type) {
+    public function getByType(string $type): array
+    {
         $query = "SELECT id, name, device_type, device_settings, 
                          position_x, position_y, created_at 
                   FROM {$this->table} 
@@ -210,8 +241,10 @@ class Preset {
     
     /**
      * Validate preset data
+     * Uses ValidatesDeviceSettings trait for shared validation logic
      */
-    private function validate() {
+    public function validate(): array
+    {
         $errors = [];
         
         // Validate name
@@ -221,11 +254,10 @@ class Preset {
             $errors['name'] = 'Preset name must be between 1 and 100 characters';
         }
         
-        // Validate device type
-        if (empty($this->device_type)) {
-            $errors['device_type'] = 'Device type is required';
-        } elseif (!in_array($this->device_type, $this->validTypes)) {
-            $errors['device_type'] = 'Invalid device type. Must be light or fan';
+        // Validate device type (from trait)
+        $typeError = $this->validateDeviceType($this->device_type);
+        if ($typeError) {
+            $errors['device_type'] = $typeError;
         }
         
         // Validate device settings JSON
@@ -236,22 +268,17 @@ class Preset {
             if (json_last_error() !== JSON_ERROR_NONE) {
                 $errors['device_settings'] = 'Invalid settings JSON format';
             } else {
-                // Validate settings structure
-                $settingsValidation = $this->validateSettings($settingsData);
+                // Validate settings structure (from trait)
+                $settingsValidation = $this->validateSettings($this->device_type, $settingsData);
                 if (!$settingsValidation['valid']) {
-                    $errors['device_settings'] = $settingsValidation['errors'];
+                    $errors = array_merge($errors, $settingsValidation['errors']);
                 }
             }
         }
         
-        // Validate position
-        if (!is_numeric($this->position_x) || $this->position_x < 0 || $this->position_x > 10000) {
-            $errors['position_x'] = 'Invalid X position (must be 0-10000)';
-        }
-        
-        if (!is_numeric($this->position_y) || $this->position_y < 0 || $this->position_y > 10000) {
-            $errors['position_y'] = 'Invalid Y position (must be 0-10000)';
-        }
+        // Validate position (from trait)
+        $positionErrors = $this->validatePosition($this->position_x, $this->position_y);
+        $errors = array_merge($errors, $positionErrors);
         
         return [
             'valid' => empty($errors),
@@ -260,44 +287,10 @@ class Preset {
     }
     
     /**
-     * Validate settings structure based on device type
+     * Save method (alias for create)
      */
-    private function validateSettings($settings) {
-        $errors = [];
-        
-        if ($this->device_type === 'light') {
-            if (!isset($settings['power']) || !is_bool($settings['power'])) {
-                $errors['power'] = 'Light power must be boolean';
-            }
-            
-            if (!isset($settings['brightness']) || 
-                !is_numeric($settings['brightness']) || 
-                $settings['brightness'] < 0 || 
-                $settings['brightness'] > 100) {
-                $errors['brightness'] = 'Light brightness must be 0-100';
-            }
-            
-            $validColors = ['warm', 'neutral', 'cool', 'pink'];
-            if (!isset($settings['colorTemp']) || !in_array($settings['colorTemp'], $validColors)) {
-                $errors['colorTemp'] = 'Invalid color temperature';
-            }
-            
-        } elseif ($this->device_type === 'fan') {
-            if (!isset($settings['power']) || !is_bool($settings['power'])) {
-                $errors['power'] = 'Fan power must be boolean';
-            }
-            
-            if (!isset($settings['speed']) || 
-                !is_numeric($settings['speed']) || 
-                $settings['speed'] < 0 || 
-                $settings['speed'] > 100) {
-                $errors['speed'] = 'Fan speed must be 0-100';
-            }
-        }
-        
-        return [
-            'valid' => empty($errors),
-            'errors' => $errors
-        ];
+    public function save(): array
+    {
+        return $this->create();
     }
 }

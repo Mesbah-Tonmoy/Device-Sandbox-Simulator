@@ -7,14 +7,11 @@
 require_once __DIR__ . '/../../config/cors.php';
 require_once __DIR__ . '/../../config/Autoloader.php';
 
+use DeviceSandbox\Controllers\BaseController;
 use DeviceSandbox\Config\Response;
 use DeviceSandbox\Models\Device;
 
-// Validate method
-Response::validateMethod(['POST']);
-
-try {
-    // Get JSON input
+BaseController::execute(function() {
     $input = Response::getJsonInput();
     
     // Sanitize input
@@ -30,24 +27,9 @@ try {
     $device->position_x = $position_x;
     $device->position_y = $position_y;
     
-    // Save device
-    $result = $device->save();
-    
-    if ($result['success']) {
-        Response::success(
-            $result['data'],
-            'Device saved successfully',
-            201
-        );
-    } else {
-        if (isset($result['errors'])) {
-            Response::validationError($result['errors']);
-        } else {
-            Response::error($result['error'] ?? 'Failed to save device');
-        }
-    }
-    
-} catch (Exception $e) {
-    $GLOBALS['last_error'] = $e->getMessage();
-    Response::serverError('An unexpected error occurred');
-}
+    BaseController::handleResult(
+        $device->save(),
+        'Device saved successfully',
+        201
+    );
+}, ['POST']);

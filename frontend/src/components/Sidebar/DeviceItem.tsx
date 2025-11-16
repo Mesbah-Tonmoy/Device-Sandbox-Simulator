@@ -16,21 +16,25 @@ interface DeviceItemProps {
 }
 
 const DeviceItem: React.FC<DeviceItemProps> = ({ type, onSelect }) => {
-  const { currentDevice } = useDevice();
+  const { currentDevice, isModalOpen } = useDevice();
 
-  const [{ isDragging }, drag] = useDrag({
-    type: DND_TYPES.DEVICE,
-    item: { type: DND_TYPES.DEVICE, deviceType: type },
-    end: (_, monitor) => {
-      // Close mobile sidebar after successful drop
-      if (monitor.didDrop() && onSelect) {
-        onSelect();
-      }
+  const [{ isDragging }, drag] = useDrag(
+    {
+      type: DND_TYPES.DEVICE,
+      item: { type: DND_TYPES.DEVICE, deviceType: type },
+      canDrag: !isModalOpen, // Disable dragging when modal is open
+      end: (_, monitor) => {
+        // Close mobile sidebar after successful drop
+        if (monitor.didDrop() && onSelect) {
+          onSelect();
+        }
+      },
+      collect: (monitor) => ({
+        isDragging: !!monitor.isDragging(),
+      }),
     },
-    collect: (monitor) => ({
-      isDragging: !!monitor.isDragging(),
-    }),
-  });
+    [isModalOpen]
+  ); // Add isModalOpen to dependencies
 
   // Close sidebar when dragging starts
   useEffect(() => {
@@ -48,19 +52,20 @@ const DeviceItem: React.FC<DeviceItemProps> = ({ type, onSelect }) => {
       className={`
         flex items-center gap-3 p-3 rounded-lg 
         ${isSelected ? 'bg-[#646F7F]' : 'bg-gray-800'}
-        hover:bg-gray-700 
         border border-gray-700 
-        cursor-grab active:cursor-grabbing 
         transition-all duration-200
         ${isDragging ? 'opacity-50' : 'opacity-100'}
+        ${
+          isModalOpen
+            ? 'cursor-not-allowed opacity-50'
+            : 'hover:bg-gray-700 cursor-grab active:cursor-grabbing'
+        }
       `}
     >
       {type === 'light' ? <Light /> : <Fan />}
       <span className="text-(--text-light-secondary) text-sm font-normal">
         {type.charAt(0).toUpperCase() + type.slice(1)}
       </span>
-      {/* Debug indicator */}
-      {/* {isSelected && <span className="ml-auto text-xs text-blue-400">●</span>} */}
     </div>
   );
 };

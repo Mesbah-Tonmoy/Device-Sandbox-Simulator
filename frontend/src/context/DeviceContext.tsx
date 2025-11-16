@@ -48,7 +48,9 @@ export const DeviceProvider: React.FC<DeviceProviderProps> = ({ children }) => {
   const [presets, setPresets] = useState<Preset[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [notification, setNotification] = useState<Notification | null>(null);
-  const [loadedPresetSettings, setLoadedPresetSettings] = useState<DeviceSettings | null>(null);
+  const [loadedPresetSettings, setLoadedPresetSettings] =
+    useState<DeviceSettings | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   const showNotification = useCallback(
     (message: string, type: NotificationType = NOTIFICATION_TYPES.SUCCESS) => {
@@ -83,6 +85,7 @@ export const DeviceProvider: React.FC<DeviceProviderProps> = ({ children }) => {
     }
   }, [showNotification]);
 
+  // Initialize data on mount
   useEffect(() => {
     const initialize = async () => {
       setLoading(true);
@@ -108,8 +111,7 @@ export const DeviceProvider: React.FC<DeviceProviderProps> = ({ children }) => {
         const response = await deviceAPI.save(deviceData);
         if (response.success && response.data) {
           setCurrentDevice(response.data);
-          // Clear loaded preset tracking when adding new device
-          setLoadedPresetSettings(null);
+          setLoadedPresetSettings(null); // Clear preset tracking
           return response.data;
         }
       } catch (error) {
@@ -174,6 +176,7 @@ export const DeviceProvider: React.FC<DeviceProviderProps> = ({ children }) => {
       const response = await deviceAPI.delete();
       if (response.success) {
         setCurrentDevice(null);
+        setLoadedPresetSettings(null); // Clear preset tracking
         showNotification(
           SUCCESS_MESSAGES.DEVICE_DELETED,
           NOTIFICATION_TYPES.SUCCESS
@@ -232,8 +235,7 @@ export const DeviceProvider: React.FC<DeviceProviderProps> = ({ children }) => {
         const response = await deviceAPI.save(deviceData);
         if (response.success && response.data) {
           setCurrentDevice(response.data);
-          // Track the loaded preset settings for comparison
-          setLoadedPresetSettings(preset.device_settings);
+          setLoadedPresetSettings(preset.device_settings); // Track loaded preset
           showNotification(
             SUCCESS_MESSAGES.PRESET_LOADED,
             NOTIFICATION_TYPES.SUCCESS
@@ -266,12 +268,31 @@ export const DeviceProvider: React.FC<DeviceProviderProps> = ({ children }) => {
     [loadPresets, showNotification]
   );
 
+  // Modal control methods
+  const openModal = useCallback(() => {
+    setIsModalOpen(true);
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+  }, []);
+
+  // Check if current device matches loaded preset (for save button state)
+  const isPresetUnchanged = Boolean(
+    currentDevice &&
+      loadedPresetSettings &&
+      JSON.stringify(currentDevice.settings) ===
+        JSON.stringify(loadedPresetSettings)
+  );
+
   const value: DeviceContextState = {
     currentDevice,
     presets,
     loading,
     notification,
     loadedPresetSettings,
+    isModalOpen,
+    isPresetUnchanged,
     addDevice,
     updateDevice,
     updateDevicePosition,
@@ -282,6 +303,8 @@ export const DeviceProvider: React.FC<DeviceProviderProps> = ({ children }) => {
     showNotification,
     loadCurrentDevice,
     loadPresets,
+    openModal,
+    closeModal,
   };
 
   return (

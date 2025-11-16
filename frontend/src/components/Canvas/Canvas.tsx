@@ -23,18 +23,12 @@ const Canvas: React.FC<CanvasProps> = ({ onToggleSidebar }) => {
     addDevice,
     loadPreset,
     removeDevice,
-    loadedPresetSettings,
+    isModalOpen,
+    isPresetUnchanged,
+    openModal,
+    closeModal,
   } = useDevice();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  // Check if current device settings match loaded preset settings
-  const isPresetUnchanged = Boolean(
-    currentDevice &&
-    loadedPresetSettings &&
-    JSON.stringify(currentDevice.settings) ===
-      JSON.stringify(loadedPresetSettings)
-  );
 
   const [{ isOver }, drop] = useDrop(() => ({
     accept: [DND_TYPES.DEVICE, DND_TYPES.PRESET],
@@ -70,12 +64,16 @@ const Canvas: React.FC<CanvasProps> = ({ onToggleSidebar }) => {
   };
 
   const handleSavePreset = () => {
-    setIsModalOpen(true);
+    openModal();
     setIsMobileMenuOpen(false);
   };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
   };
 
   return (
@@ -87,7 +85,8 @@ const Canvas: React.FC<CanvasProps> = ({ onToggleSidebar }) => {
           {/* Mobile Toggle Button */}
           <button
             onClick={onToggleSidebar}
-            className="md:hidden bg-dark-secondary p-2 rounded-lg border border-gray-700 text-white hover:text-gray-200 transition-all cursor-pointer"
+            disabled={isModalOpen}
+            className="md:hidden bg-dark-secondary p-2 rounded-lg border border-gray-700 text-white hover:text-gray-200 transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label="Toggle Sidebar"
           >
             <Bars />
@@ -136,7 +135,7 @@ const Canvas: React.FC<CanvasProps> = ({ onToggleSidebar }) => {
                   {/* Backdrop to close menu */}
                   <div
                     className="fixed inset-0 z-10"
-                    onClick={() => setIsMobileMenuOpen(false)}
+                    onClick={closeMobileMenu}
                   />
 
                   {/* Menu */}
@@ -162,13 +161,13 @@ const Canvas: React.FC<CanvasProps> = ({ onToggleSidebar }) => {
         )}
       </header>
 
-      {/* Canvas Area - Relative positioning for notification and modal */}
+      {/* Canvas Area */}
       <div
         id="canvas"
         ref={drop as any}
         className={`flex-1 relative ${isModalOpen ? 'overflow-hidden' : 'overflow-auto'} bg-dark-primary transition-colors duration-200 px-6 pb-6 ${isOver ? 'bg-dark-secondary' : ''}`}
       >
-        {/* Notification - Inside Canvas */}
+        {/* Notification */}
         <Notification />
 
         {/* Empty State */}
@@ -183,20 +182,17 @@ const Canvas: React.FC<CanvasProps> = ({ onToggleSidebar }) => {
         {/* Device Instance */}
         {currentDevice && <DeviceInstance device={currentDevice} />}
 
-        {/* Modal Overlay - Only covers canvas */}
+        {/* Modal Overlay */}
         {isModalOpen && (
           <div className="absolute inset-0 z-40 h-screen flex items-center justify-center">
             {/* Backdrop - Only canvas area */}
             <div
               className="absolute inset-0 bg-[#0A101DE5] backdrop-blur-[11px]"
-              onClick={() => setIsModalOpen(false)}
+              onClick={closeModal}
             />
 
             {/* Modal Content */}
-            <SavePresetModal
-              isOpen={isModalOpen}
-              onClose={() => setIsModalOpen(false)}
-            />
+            <SavePresetModal isOpen={isModalOpen} onClose={closeModal} />
           </div>
         )}
       </div>

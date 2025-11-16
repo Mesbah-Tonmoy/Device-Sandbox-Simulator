@@ -24,15 +24,15 @@ export interface FanSettings {
 // Device Settings Union Type
 export type DeviceSettings = LightSettings | FanSettings;
 
-// Position Interface
+// Position
 export interface Position {
   x: number;
   y: number;
 }
 
-// Device Interface
+// Device
 export interface Device {
-  id?: number;
+  id: number;
   type: DeviceType;
   settings: DeviceSettings;
   position_x: number;
@@ -41,7 +41,7 @@ export interface Device {
   updated_at?: string;
 }
 
-// Preset Interface
+// Preset
 export interface Preset {
   id: number;
   name: string;
@@ -52,7 +52,7 @@ export interface Preset {
   created_at: string;
 }
 
-// API Response Interfaces
+// API Response
 export interface ApiResponse<T = any> {
   success: boolean;
   message: string;
@@ -84,13 +84,18 @@ export interface ColorTempConfig {
   className: string;
 }
 
-// Context State Interface
+// Device Context State
 export interface DeviceContextState {
+  // State
   currentDevice: Device | null;
   presets: Preset[];
   loading: boolean;
   notification: Notification | null;
   loadedPresetSettings: DeviceSettings | null;
+  isModalOpen: boolean;
+  isPresetUnchanged: boolean;
+
+  // Device Methods
   addDevice: (
     type: DeviceType,
     position?: Position
@@ -98,10 +103,18 @@ export interface DeviceContextState {
   updateDevice: (updates: Partial<DeviceSettings>) => Promise<void>;
   updateDevicePosition: (position: Position) => Promise<void>;
   removeDevice: () => Promise<void>;
+
+  // Preset Methods
   saveAsPreset: (name: string) => Promise<Preset | undefined>;
   loadPreset: (preset: Preset) => Promise<void>;
   deletePreset: (presetId: number) => Promise<void>;
+
+  // Utility Methods
   showNotification: (message: string, type?: NotificationType) => void;
   loadCurrentDevice: () => Promise<void>;
   loadPresets: () => Promise<void>;
+
+  // Modal Methods
+  openModal: () => void;
+  closeModal: () => void;
 }

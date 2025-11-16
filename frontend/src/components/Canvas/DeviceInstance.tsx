@@ -4,6 +4,7 @@
 
 import React from 'react';
 import type { Device, LightSettings, FanSettings } from '../../types';
+import { useDevice } from '../../context/DeviceContext';
 import LightDevice from '../Devices/LightDevice';
 import FanDevice from '../Devices/FanDevice';
 import LightControls from '../Controls/LightControls';
@@ -14,8 +15,12 @@ interface DeviceInstanceProps {
 }
 
 const DeviceInstance: React.FC<DeviceInstanceProps> = ({ device }) => {
+  const { isModalOpen } = useDevice();
+
   return (
-    <div className="flex flex-col items-center justify-center bg-[#10182880] border-2 border-gray-800 dss-rounded px-4">
+    <div
+      className={`flex flex-col items-center justify-center bg-[#10182880] border-2 border-gray-800 dss-rounded px-4 ${isModalOpen ? 'h-screen overflow-hidden' : ''}`}
+    >
       {/* Device Visual */}
       <div className="lg:mb-30 lg:mt-35 my-15">
         {device.type === 'light' ? (

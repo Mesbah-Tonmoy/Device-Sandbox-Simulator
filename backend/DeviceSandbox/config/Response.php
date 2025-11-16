@@ -41,7 +41,7 @@ class Response
         }
         
         // Add debug info in development (use param or global)
-        $isDebug = getenv('APP_DEBUG') === 'true';
+        $isDebug = getenv('APP_DEBUG') ?: false;
         if ($isDebug && ($debug ?? $GLOBALS['last_error'] ?? null)) {
             $response['debug'] = $debug ?? $GLOBALS['last_error'];
         }

@@ -9,6 +9,7 @@ import type { Preset } from '../../types';
 import { DND_TYPES } from '../../utils/constants';
 import Light from '../Icons/Light';
 import Fan from '../Icons/Fan';
+import Trash from '../Icons/Trash';
 
 interface PresetItemProps {
   preset: Preset;
@@ -16,7 +17,7 @@ interface PresetItemProps {
 }
 
 const PresetItem: React.FC<PresetItemProps> = ({ preset, onSelect }) => {
-  const { isModalOpen } = useDevice();
+  const { isModalOpen, deletePreset } = useDevice();
 
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -43,6 +44,18 @@ const PresetItem: React.FC<PresetItemProps> = ({ preset, onSelect }) => {
     }
   }, [isDragging, onSelect]);
 
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${preset.name}"?`
+    );
+
+    if (confirmed) {
+      deletePreset(preset.id);
+    }
+  };
+
   return (
     <div
       ref={drag as any}
@@ -56,12 +69,27 @@ const PresetItem: React.FC<PresetItemProps> = ({ preset, onSelect }) => {
         ${
           isModalOpen
             ? 'cursor-not-allowed opacity-50'
-            : 'hover:bg-gray-700 cursor-grab active:cursor-grabbing'
+            : 'hover:bg-gray-700 cursor-grab active:cursor-grabbing group'
         }
       `}
     >
       {preset.device_type === 'light' ? <Light /> : <Fan />}
       <span className="text-white text-sm truncate flex-1">{preset.name}</span>
+
+      {/* Delete button - shown on hover (desktop) or tap (mobile) */}
+      <button
+        onClick={handleDelete}
+        className={`
+          p-2 rounded-md 
+          text-red-400 hover:text-red-300 hover:bg-red-500/10
+          transition-all duration-200 cursor-pointer
+          md:invisible md:opacity-0 md:group-hover:opacity-100 md:group-hover:visible
+        `}
+        aria-label="Delete preset"
+        title="Delete preset"
+      >
+        <Trash />
+      </button>
     </div>
   );
 };

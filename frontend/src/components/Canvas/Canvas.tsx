@@ -32,23 +32,9 @@ const Canvas: React.FC<CanvasProps> = ({ onToggleSidebar }) => {
 
   const [{ isOver }, drop] = useDrop(() => ({
     accept: [DND_TYPES.DEVICE, DND_TYPES.PRESET],
-    drop: (item: DragItem, monitor) => {
-      const offset = monitor.getClientOffset();
-      if (!offset) return;
-
-      // Calculate position relative to canvas
-      const canvasRect = document
-        .getElementById('canvas')
-        ?.getBoundingClientRect();
-      if (!canvasRect) return;
-
-      const position = {
-        x: Math.round(offset.x - canvasRect.left),
-        y: Math.round(offset.y - canvasRect.top),
-      };
-
+    drop: (item: DragItem) => {
       if (item.type === DND_TYPES.DEVICE && item.deviceType) {
-        addDevice(item.deviceType, position);
+        addDevice(item.deviceType);
       } else if (item.type === DND_TYPES.PRESET && item.preset) {
         loadPreset(item.preset);
       }

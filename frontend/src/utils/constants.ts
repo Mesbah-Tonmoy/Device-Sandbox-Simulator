@@ -3,7 +3,6 @@ import type {
   ColorTempConfig,
   LightSettings,
   FanSettings,
-  Position,
 } from '../types';
 
 // API Configuration
@@ -88,20 +87,6 @@ export const DEFAULT_DEVICE_SETTINGS: {
     power: false,
     speed: 50,
   },
-};
-
-// Canvas Configuration
-export const CANVAS_CONFIG: {
-  DEFAULT_POSITION: Position;
-  MIN_POSITION: number;
-  MAX_POSITION: number;
-} = {
-  DEFAULT_POSITION: {
-    x: 640,
-    y: 350,
-  },
-  MIN_POSITION: 0,
-  MAX_POSITION: 10000,
 };
 
 // Notification Types

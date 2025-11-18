@@ -9,6 +9,7 @@ namespace DeviceSandbox\Models;
 
 use DeviceSandbox\Traits\ValidatesDeviceSettings;
 use PDO;
+use PDOException;
 
 class Preset extends BaseModel
 {
@@ -19,8 +20,6 @@ class Preset extends BaseModel
     public string $name = '';
     public string $device_type = '';
     public string $device_settings = '';
-    public int $position_x = 0;
-    public int $position_y = 0;
     public ?string $created_at = null;
     
     protected string $table = 'presets';
@@ -30,8 +29,7 @@ class Preset extends BaseModel
      */
     public function getAll(): array
     {
-        $query = "SELECT id, name, device_type, device_settings, 
-                         position_x, position_y, created_at 
+        $query = "SELECT id, name, device_type, device_settings, created_at 
                   FROM {$this->table} 
                   ORDER BY created_at DESC";
         
@@ -53,8 +51,7 @@ class Preset extends BaseModel
      */
     public function getById(int $id): array|false
     {
-        $query = "SELECT id, name, device_type, device_settings, 
-                         position_x, position_y, created_at 
+        $query = "SELECT id, name, device_type, device_settings, created_at 
                   FROM {$this->table} 
                   WHERE id = :id 
                   LIMIT 1";
@@ -116,8 +113,8 @@ class Preset extends BaseModel
         
         try {
             $query = "INSERT INTO {$this->table} 
-                     (name, device_type, device_settings, position_x, position_y) 
-                     VALUES (:name, :device_type, :device_settings, :position_x, :position_y)";
+                     (name, device_type, device_settings) 
+                     VALUES (:name, :device_type, :device_settings)";
             
             $stmt = $this->conn->prepare($query);
             
@@ -125,8 +122,6 @@ class Preset extends BaseModel
             $stmt->bindParam(':name', $this->name);
             $stmt->bindParam(':device_type', $this->device_type);
             $stmt->bindParam(':device_settings', $this->device_settings);
-            $stmt->bindParam(':position_x', $this->position_x, PDO::PARAM_INT);
-            $stmt->bindParam(':position_y', $this->position_y, PDO::PARAM_INT);
             
             $stmt->execute();
             $this->id = (int) $this->conn->lastInsertId();
@@ -138,12 +133,10 @@ class Preset extends BaseModel
                     'name' => $this->name,
                     'device_type' => $this->device_type,
                     'device_settings' => json_decode($this->device_settings, true),
-                    'position_x' => $this->position_x,
-                    'position_y' => $this->position_y
                 ]
             ];
             
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $GLOBALS['last_error'] = $e->getMessage();
             
             // Check for unique constraint violation
@@ -182,7 +175,7 @@ class Preset extends BaseModel
                 ];
             }
             
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $GLOBALS['last_error'] = $e->getMessage();
             return ['success' => false, 'error' => 'Failed to delete preset'];
         }
@@ -193,8 +186,7 @@ class Preset extends BaseModel
      */
     public function searchByName(string $searchTerm): array
     {
-        $query = "SELECT id, name, device_type, device_settings, 
-                         position_x, position_y, created_at 
+        $query = "SELECT id, name, device_type, device_settings, created_at 
                   FROM {$this->table} 
                   WHERE name LIKE :search 
                   ORDER BY created_at DESC";
@@ -219,8 +211,7 @@ class Preset extends BaseModel
      */
     public function getByType(string $type): array
     {
-        $query = "SELECT id, name, device_type, device_settings, 
-                         position_x, position_y, created_at 
+        $query = "SELECT id, name, device_type, device_settings, created_at 
                   FROM {$this->table} 
                   WHERE device_type = :type 
                   ORDER BY created_at DESC";
@@ -275,10 +266,6 @@ class Preset extends BaseModel
                 }
             }
         }
-        
-        // Validate position (from trait)
-        $positionErrors = $this->validatePosition($this->position_x, $this->position_y);
-        $errors = array_merge($errors, $positionErrors);
         
         return [
             'valid' => empty($errors),

@@ -20,8 +20,6 @@ CREATE TABLE devices (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     type ENUM('light', 'fan') NOT NULL COMMENT 'Device type',
     settings JSON NOT NULL COMMENT 'Device-specific settings',
-    position_x SMALLINT NOT NULL DEFAULT 0 COMMENT 'X coordinate on canvas',
-    position_y SMALLINT NOT NULL DEFAULT 0 COMMENT 'Y coordinate on canvas',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
@@ -30,8 +28,6 @@ CREATE TABLE devices (
     INDEX idx_updated_at (updated_at),
     
     -- Constraints
-    CONSTRAINT chk_position_x CHECK (position_x >= 0 AND position_x <= 10000),
-    CONSTRAINT chk_position_y CHECK (position_y >= 0 AND position_y <= 10000),
     CONSTRAINT chk_settings_valid CHECK (JSON_VALID(settings))
 ) ENGINE=InnoDB 
 DEFAULT CHARSET=utf8mb4 
@@ -47,8 +43,6 @@ CREATE TABLE presets (
     name VARCHAR(100) NOT NULL UNIQUE COMMENT 'Preset name given by user (must be unique)',
     device_type ENUM('light', 'fan') NOT NULL COMMENT 'Type of device in preset',
     device_settings JSON NOT NULL COMMENT 'Complete device configuration',
-    position_x SMALLINT NOT NULL DEFAULT 0 COMMENT 'Saved X coordinate',
-    position_y SMALLINT NOT NULL DEFAULT 0 COMMENT 'Saved Y coordinate',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
     -- Indexes
@@ -61,8 +55,6 @@ CREATE TABLE presets (
     
     -- Constraints
     CONSTRAINT chk_name_length CHECK (CHAR_LENGTH(name) BETWEEN 1 AND 100),
-    CONSTRAINT chk_preset_position_x CHECK (position_x >= 0 AND position_x <= 10000),
-    CONSTRAINT chk_preset_position_y CHECK (position_y >= 0 AND position_y <= 10000),
     CONSTRAINT chk_preset_settings_valid CHECK (JSON_VALID(device_settings))
 ) ENGINE=InnoDB 
 DEFAULT CHARSET=utf8mb4 
@@ -77,7 +69,7 @@ COMMENT='Stores user-saved device presets';
 -- SELECT * FROM devices ORDER BY updated_at DESC LIMIT 1;
 
 -- Get all presets ordered by creation date
--- SELECT id, name, device_type, device_settings, position_x, position_y, created_at 
+-- SELECT id, name, device_type, device_settings, created_at 
 -- FROM presets ORDER BY created_at DESC;
 
 -- Search presets by name

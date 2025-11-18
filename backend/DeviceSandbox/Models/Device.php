@@ -8,7 +8,7 @@
 namespace DeviceSandbox\Models;
 
 use DeviceSandbox\Traits\ValidatesDeviceSettings;
-use PDO;
+use PDOException;
 
 class Device extends BaseModel
 {
@@ -18,8 +18,6 @@ class Device extends BaseModel
     public ?int $id = null;
     public string $type = '';
     public string $settings = '';
-    public int $position_x = 0;
-    public int $position_y = 0;
     public ?string $created_at = null;
     public ?string $updated_at = null;
     
@@ -68,16 +66,14 @@ class Device extends BaseModel
             
             // Insert new device
             $insertQuery = "INSERT INTO {$this->table} 
-                           (type, settings, position_x, position_y) 
-                           VALUES (:type, :settings, :position_x, :position_y)";
+                           (type, settings) 
+                           VALUES (:type, :settings)";
             
             $stmt = $this->conn->prepare($insertQuery);
             
             // Bind parameters
             $stmt->bindParam(':type', $this->type);
             $stmt->bindParam(':settings', $this->settings);
-            $stmt->bindParam(':position_x', $this->position_x, PDO::PARAM_INT);
-            $stmt->bindParam(':position_y', $this->position_y, PDO::PARAM_INT);
             
             $stmt->execute();
             $this->id = (int) $this->conn->lastInsertId();
@@ -90,12 +86,10 @@ class Device extends BaseModel
                     'id' => $this->id,
                     'type' => $this->type,
                     'settings' => json_decode($this->settings, true),
-                    'position_x' => $this->position_x,
-                    'position_y' => $this->position_y
                 ]
             ];
             
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $this->conn->rollBack();
             $GLOBALS['last_error'] = $e->getMessage();
             return ['success' => false, 'error' => 'Database error occurred'];
@@ -117,7 +111,7 @@ class Device extends BaseModel
                 'message' => 'Device removed from canvas'
             ];
             
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $GLOBALS['last_error'] = $e->getMessage();
             return ['success' => false, 'error' => 'Failed to delete device'];
         }
@@ -152,10 +146,6 @@ class Device extends BaseModel
                 }
             }
         }
-        
-        // Validate position (from trait)
-        $positionErrors = $this->validatePosition($this->position_x, $this->position_y);
-        $errors = array_merge($errors, $positionErrors);
         
         return [
             'valid' => empty($errors),

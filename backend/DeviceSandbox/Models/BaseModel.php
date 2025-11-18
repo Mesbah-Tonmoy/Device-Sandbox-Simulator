@@ -10,6 +10,7 @@ namespace DeviceSandbox\Models;
 use DeviceSandbox\Config\Database;
 use DeviceSandbox\Interfaces\ModelInterface;
 use PDO;
+use PDOException;
 
 abstract class BaseModel implements ModelInterface
 {
@@ -50,7 +51,7 @@ abstract class BaseModel implements ModelInterface
             $stmt = $this->conn->prepare($query);
             $stmt->execute($params);
             return ['success' => true, 'statement' => $stmt];
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $GLOBALS['last_error'] = $e->getMessage();
             return ['success' => false, 'error' => 'Database error occurred'];
         }

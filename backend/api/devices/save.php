@@ -17,15 +17,11 @@ BaseController::execute(function() {
     // Sanitize input
     $type = Response::sanitize($input['type'] ?? '');
     $settings = $input['settings'] ?? null;
-    $position_x = (int)($input['position_x'] ?? 0);
-    $position_y = (int)($input['position_y'] ?? 0);
     
     // Create device instance
     $device = new Device();
     $device->type = $type;
     $device->settings = json_encode($settings);
-    $device->position_x = $position_x;
-    $device->position_y = $position_y;
     
     BaseController::handleResult(
         $device->save(),

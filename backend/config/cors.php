@@ -13,21 +13,25 @@ $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 $isDev = getenv('APP_ENV') === 'development';
 
 // Allowed origins
-$allowedOrigins = $isDev ? [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'http://localhost:5174',
-    'http://127.0.0.1:5173',
-] : [];  // In prod, set to specific domains, e.g., ['https://yourdomain.com']
+$corsOriginEnv = getenv('CORS_ORIGIN') ?: '';
+// Remove quotes if present
+$corsOriginEnv = trim($corsOriginEnv, '"\' ');
+$allowedOrigins = $isDev 
+    ? ['*']  // Allow all in dev
+    : array_filter(array_map('trim', explode(',', $corsOriginEnv)));
 
 // Set CORS headers
-if (in_array($origin, $allowedOrigins)) {
-    header("Access-Control-Allow-Origin: {$origin}");
-} else {
-    http_response_code(403);
-    echo json_encode(['error' => 'CORS origin not allowed']);
-    exit;
+if ($origin) {  // Only process if origin header exists
+    if ($allowedOrigins === ['*'] || in_array($origin, $allowedOrigins)) {
+        header("Access-Control-Allow-Origin: {$origin}");
+    } else {
+        // Origin not in allowed list
+        http_response_code(403);
+        echo json_encode(['error' => 'CORS origin not allowed']);
+        exit;
+    }
 }
+// If no origin header, it's a same-origin or non-browser request (allowed)
 
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");

@@ -35,24 +35,6 @@ trait ValidatesDeviceSettings
     }
     
     /**
-     * Validate position coordinates
-     */
-    protected function validatePosition(int $x, int $y): array
-    {
-        $errors = [];
-        
-        if (!is_numeric($x) || $x < 0 || $x > 10000) {
-            $errors['position_x'] = 'Invalid X position (must be 0-10000)';
-        }
-        
-        if (!is_numeric($y) || $y < 0 || $y > 10000) {
-            $errors['position_y'] = 'Invalid Y position (must be 0-10000)';
-        }
-        
-        return $errors;
-    }
-    
-    /**
      * Validate settings structure based on device type
      */
     protected function validateSettings(string $type, array $settings): array

@@ -1,6 +1,5 @@
 /**
  * SavePresetModal Component - Modal for saving presets
- * Note: Backdrop is now handled by parent Canvas component
  */
 
 import React, { useState, useEffect } from 'react';
@@ -53,7 +52,10 @@ const SavePresetModal: React.FC<SavePresetModalProps> = ({
       onClose();
     } catch (err: any) {
       // Handle API error message
-      const errorMessage = err?.message || err?.error || 'Failed to save preset. Please try again.';
+      const errorMessage =
+        err?.message ||
+        err?.error ||
+        'Failed to save preset. Please try again.';
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -90,6 +92,7 @@ const SavePresetModal: React.FC<SavePresetModalProps> = ({
           type="text"
           value={presetName}
           onChange={(e) => setPresetName(e.target.value)}
+          name="preset-name"
           placeholder="Name it"
           disabled={isLoading}
           className="w-full px-3 py-3 bg-gray-700 rounded-lg text-white text-sm placeholder-(--text-dark-gray) focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"

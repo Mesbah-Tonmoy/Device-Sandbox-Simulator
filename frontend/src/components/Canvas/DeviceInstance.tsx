@@ -22,7 +22,7 @@ const DeviceInstance: React.FC<DeviceInstanceProps> = ({ device }) => {
       className={`flex flex-col items-center justify-center bg-[#10182880] border-2 border-gray-800 dss-rounded px-4 ${isModalOpen ? 'h-screen overflow-hidden' : ''}`}
     >
       {/* Device Visual */}
-      <div className="lg:mb-30 lg:mt-35 my-15">
+      <div className="lg:my-18 my-15">
         {device.type === 'light' ? (
           <LightDevice settings={device.settings as LightSettings} />
         ) : (

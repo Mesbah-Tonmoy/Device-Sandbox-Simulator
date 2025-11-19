@@ -37,8 +37,8 @@ class Database {
         // Set database credentials with defaults
         $this->host = getenv('DB_HOST') ?: 'localhost';
         $this->port = (int)(getenv('DB_PORT') ?: 3306);
-        $this->db_name = getenv('DB_NAME') ?: throw new Exception('DB_NAME not set');
-        $this->username = getenv('DB_USER') ?: throw new Exception('DB_USER not set');
+        $this->db_name = getenv('DB_NAME') ?: 'device_sandbox';
+        $this->username = getenv('DB_USER') ?: 'root';
         $this->password = getenv('DB_PASS') ?: '';
     }
     

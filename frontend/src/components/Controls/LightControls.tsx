@@ -49,7 +49,7 @@ const LightControls: React.FC = () => {
     <div className="bg-[#1E293980] p-[25px] dss-rounded border border-gray-700 space-y-5">
       {/* Power Toggle */}
       <div className="flex items-center justify-between">
-        <label>Power</label>
+        <span className="control-panel-label">Power</span>
         <div className="toggle-switch">
           <input
             type="checkbox"
@@ -63,7 +63,9 @@ const LightControls: React.FC = () => {
 
       {/* Color Temperature */}
       <div>
-        <label className="block mb-[10px]">Color Temperature</label>
+        <span className="control-panel-label block mb-[10px]">
+          Color Temperature
+        </span>
         <div className="flex gap-2">
           {Object.entries(COLOR_TEMP_CONFIG).map(([key, config]) => (
             <button
@@ -84,7 +86,7 @@ const LightControls: React.FC = () => {
       {/* Brightness Slider */}
       <div>
         <div className="flex items-center justify-between mb-[10px]">
-          <label>Brightness</label>
+          <span className="control-panel-label">Brightness</span>
           <span className="text-(--text-dark-gray) text-base font-normal">
             {brightness}%
           </span>

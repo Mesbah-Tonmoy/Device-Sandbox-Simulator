@@ -260,7 +260,7 @@ input[type='range']::-moz-range-thumb:hover {
   animation: slideUp 0.3s ease-out;
 }
 
-.control-panel label {
+.control-panel-label {
   font-size: 0.875rem;
   line-height: 0.875rem;
   font-weight: 500;

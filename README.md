@@ -1,340 +1,161 @@
-# Device Sandbox Simulator
+# Device Sandbox Simulator - Docker Setup
 
-![PHP](https://img.shields.io/badge/PHP-8.4-777BB4?logo=php&logoColor=white)
-![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)
-![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?logo=mysql&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.1-38B2AC?logo=tailwind-css&logoColor=white)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
-
-A full-stack web application that allows users to interact with and control virtual devices (Light and Fan) in a sandbox environment. Built with React (TypeScript) frontend and PHP backend with MySQL database.
+🐳 **Containerized version** of the Device Sandbox Simulator for easy deployment.
 
 ![Demo](demo/demo.gif)
 
-## 🎯 Features
-
-- **Drag & Drop Interface** - Intuitive device placement on canvas
-- **Real-time Device Control**
-  - **Light**: Power toggle, brightness slider (0-100%), color temperature (warm, neutral, cool, pink)
-  - **Fan**: Power toggle, speed control (0-100%)
-- **Preset Management** - Save, load and delete device configurations
-- **Responsive Design** - Works seamlessly on desktop and mobile devices
-- **Touch Support** - Full mobile touch interaction support
-- **Persistent Storage** - All data saved to MySQL database
-- **Clean Architecture** - Modular components with proper separation of concerns
-
 ---
 
-## 🛠️ Tech Stack
+## 🚀 Quick Start (2 minutes)
 
-### Frontend
+### Prerequisites
 
-- **React 19** with TypeScript
-- **Vite** - Build tool and dev server
-- **Tailwind CSS 4.1** - Styling
-- **React DnD** - Drag and drop functionality
-- **React DnD Touch-Backend** - Touch support for tablet and mobile devices
-- **Axios** - HTTP client
-- **Context API** - State management
+- Docker Desktop or Docker Engine (20.10+)
+- Docker Compose (2.0+)
 
-### Backend
+### Installation
 
-- **PHP 8.4** - Server-side logic
-- **MySQL 8.0+** - Database
-- **Apache** - Web server
-- **Custom MVC Architecture**
-  - PSR-4 Autoloading
-  - RESTful API design
-  - Trait-based validation
-  - Singleton database pattern
+1. **Clone the repository:**
 
----
-
-## 📋 Prerequisites
-
-Ensure you have the following installed on your system:
-
-### All Operating Systems
-
-- **PHP** >= 8.1
-- **MySQL** >= 8.0
-- **Apache** >= 2.4 with `mod_rewrite` enabled
-- **Node.js** >= 18.0 (includes npm)
-- **Git** (for cloning the repository)
-
-### Installation Links
-
-#### Windows
-
-- PHP: [https://windows.php.net/download/](https://windows.php.net/download/)
-- MySQL: [https://dev.mysql.com/downloads/installer/](https://dev.mysql.com/downloads/installer/)
-- Apache: [https://www.apachelounge.com/download/](https://www.apachelounge.com/download/)
-- Node.js: [https://nodejs.org/](https://nodejs.org/)
-- XAMPP (All-in-one): [https://www.apachefriends.org/](https://www.apachefriends.org/)
-
-#### macOS
-
-```bash
-# Using Homebrew
-brew install php@8.4
-brew install mysql
-brew install httpd
-brew install node
-```
-
-#### Linux (Ubuntu/Debian)
-
-```bash
-# Add PHP repository
-sudo add-apt-repository ppa:ondrej/php
-sudo apt update
-
-# Install dependencies
-sudo apt install php8.4 php8.4-mysql php8.4-cli php8.4-json php8.4-mbstring
-sudo apt install mysql-server
-sudo apt install apache2
-sudo apt install nodejs npm
-```
-
----
-
-## 🚀 Installation & Setup
-
-### Step 1: Clone the Repository
-
-```bash
-git clone https://github.com/Mesbah-Tonmoy/Device-Sandbox-Simulator.git
-cd Device-Sandbox-Simulator
-```
-
-### Step 2: Database Setup
-
-#### 2.1 Create Database
-
-**Option A: Using MySQL Command Line**
-
-```bash
-mysql -u root -p
-```
-
-Then in MySQL prompt:
-
-```sql
-CREATE DATABASE device_sandbox CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-EXIT;
-```
-
-**Option B: Using phpMyAdmin**
-
-1. Open phpMyAdmin (usually at `http://localhost/phpmyadmin`)
-2. Click "New" in the sidebar
-3. Database name: `device_sandbox`
-4. Collation: `utf8mb4_unicode_ci`
-5. Click "Create"
-
-#### 2.2 Import Database Schema
-
-**Option A: Command Line**
-
-```bash
-mysql -u root -p device_sandbox < database/schema.sql
-```
-
-**Option B: phpMyAdmin**
-
-1. Select `device_sandbox` database
-2. Click "Import" tab
-3. Choose `database/schema.sql` file
-4. Click "Go"
-
-#### 2.3 Configure Database Connection
-
-Edit `backend/.env`:
-
-```ini
-# Database Configuration
-DB_HOST=localhost
-DB_NAME=device_sandbox
-DB_USER=root
-DB_PASS=your_password_here
-DB_CHARSET=utf8mb4
-
-# Environment
-ENV=development
-```
-
-**Important:** Replace `your_password_here` with your actual MySQL root password.
-
-### Step 3: Backend Setup (Apache)
-
-#### 3.1 Configure Apache Document Root
-
-**Windows (XAMPP)**
-
-1. Edit `C:\xampp\apache\conf\httpd.conf`
-2. Find `DocumentRoot` and update:
-   ```apache
-   DocumentRoot "C:/xampp/htdocs"
-   <Directory "C:/xampp/htdocs">
+   ```bash
+   git clone https://github.com/Mesbah-Tonmoy/Device-Sandbox-Simulator.git
+   cd Device-Sandbox-Simulator
    ```
 
-**macOS (Homebrew)**
+2. **Switch to Docker branch:**
 
-1. Edit `/usr/local/etc/httpd/httpd.conf`
-2. Update DocumentRoot to your projects folder
+   ```bash
+   git checkout docker-react-php
+   ```
 
-**Linux**
+3. **Copy environment file:**
 
-1. Edit `/etc/apache2/sites-available/000-default.conf`
-2. Update DocumentRoot
+   ```bash
+   cp .env.example .env
+   ```
 
-#### 3.2 Copy Backend to Apache Directory
+4. **Start the application:**
 
-**Windows (XAMPP)**
+   ```bash
+   docker-compose up
+   ```
 
-```bash
-# Copy backend folder
-cp -r backend C:/xampp/htdocs/device-sandbox-simulator/
-```
+5. **Access the application:**
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:8080/api
+   - Database: localhost:3307
 
-**macOS/Linux**
-
-```bash
-# Copy backend folder
-sudo cp -r backend /var/www/html/device-sandbox-simulator/
-sudo chown -R www-data:www-data /var/www/html/device-sandbox-simulator/
-```
-
-#### 3.3 Enable Apache mod_rewrite (if not enabled)
-
-**Windows (XAMPP)**
-
-- Edit `httpd.conf`
-- Uncomment: `LoadModule rewrite_module modules/mod_rewrite.so`
-
-**macOS**
-
-```bash
-sudo a2enmod rewrite
-sudo apachectl restart
-```
-
-**Linux**
-
-```bash
-sudo a2enmod rewrite
-sudo systemctl restart apache2
-```
-
-#### 3.4 Set Permissions
-
-**macOS/Linux**
-
-```bash
-sudo chmod -R 755 /var/www/html/device-sandbox-simulator/
-sudo chmod -R 777 /var/www/html/device-sandbox-simulator/backend/logs/
-```
-
-#### 3.5 Verify Backend
-
-Open browser and navigate to:
-
-```
-http://localhost/device-sandbox-simulator/backend/api/devices/get.php
-```
-
-Expected response:
-
-```json
-{
-  "success": true,
-  "message": "No device on canvas"
-}
-```
-
-### Step 4: Frontend Setup
-
-#### 4.1 Install Dependencies
-
-```bash
-cd frontend
-npm install
-```
-
-#### 4.2 Configure API URL
-
-Edit `frontend/src/utils/constants.ts`:
-
-```typescript
-// Update this line with your backend URL
-export const API_BASE_URL =
-  "http://localhost/device-sandbox-simulator/backend/api";
-```
-
-#### 4.3 Start Development Server
-
-```bash
-npm run dev
-```
-
-The application will start at `http://localhost:5173` (or another available port).
-
-### Step 5: Verify Installation
-
-1. Open `http://localhost:5173` in your browser
-2. You should see the Device Sandbox Simulator interface
-3. Try dragging a Light or Fan device to the canvas
-4. Test device controls (power, brightness/speed)
-5. Save a preset and reload the page to verify persistence
+That's it! 🎉
 
 ---
 
-## 🎮 Usage Guide
+## 📦 What's Included
 
-### Adding Devices
+### Services
 
-1. **Drag from Sidebar** - Click and drag a Light or Fan icon from the left sidebar
-2. **Drop on Canvas** - Drop it anywhere on the "Testing Canvas" area
-3. **Device appears centered** - The device will be placed in the center with its control panel
+| Service      | Technology                   | Port | Description    |
+| ------------ | ---------------------------- | ---- | -------------- |
+| **Frontend** | React 19 + TypeScript + Vite | 3000 | User interface |
+| **Backend**  | PHP 8.4 + Apache             | 8080 | REST API       |
+| **Database** | MySQL 8.0                    | 3307 | Data storage   |
 
-### Controlling Devices
+### Features
 
-#### Light Controls
+- ✅ **Hot Reload** - Frontend updates automatically
+- ✅ **Data Persistence** - Database data saved in Docker volumes
+- ✅ **Health Checks** - Automatic service monitoring
+- ✅ **Isolated Network** - Services communicate securely
+- ✅ **Auto-restart** - Services restart on failure
+- ✅ **Log Management** - Centralized logging
 
-- **Power Toggle** - Click to turn the light on/off
-- **Brightness Slider** - Adjust brightness from 0-100%
-- **Color Temperature** - Choose between Warm, Neutral, Cool, or Pink
+---
 
-#### Fan Controls
+## 🎯 Usage
 
-- **Power Toggle** - Click to turn the fan on/off
-- **Speed Slider** - Adjust fan speed from 0-100%
+### Starting the Application
 
-### Managing Presets
+```bash
+# Start all services
+docker-compose up
 
-1. **Save Preset**
+# Start in background (detached mode)
+docker-compose up -d
 
-   - Configure a device with desired settings
-   - Click "Save Preset" button
-   - Enter a unique name
-   - Click "Save"
+# View logs
+docker-compose logs -f
 
-2. **Load Preset**
+# View specific service logs
+docker-compose logs -f frontend
+docker-compose logs -f backend
+docker-compose logs -f database
+```
 
-   - Drag a saved preset from the sidebar
-   - Drop on canvas
-   - Device will load with saved settings
+### Stopping the Application
 
-3. **Delete Preset**
-   - Click the trash icon on any preset in the sidebar
-   - Click "OK" to confirm deletion
+```bash
+# Stop all services
+docker-compose down
 
-### Mobile Usage
+# Stop and remove volumes (deletes all data)
+docker-compose down -v
 
-- **Open Sidebar** - Tap the hamburger menu icon (☰)
-- **Drag Devices** - Long-press and drag items
-- **Touch Controls** - Tap toggles, slide controls work with touch
-- **Close Sidebar** - Tap outside or the X button
+# Stop and remove images
+docker-compose down --rmi all
+```
+
+### Rebuilding Services
+
+```bash
+# Rebuild all services
+docker-compose build
+
+# Rebuild specific service
+docker-compose build frontend
+docker-compose build backend
+
+# Rebuild and start
+docker-compose up --build
+```
+
+---
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Edit `.env` file to customize:
+
+```ini
+# Ports (change if conflicts exist)
+FRONTEND_PORT=3000
+BACKEND_PORT=8080
+DB_PORT=3307
+
+# Database credentials
+DB_NAME=device_sandbox
+DB_USER=sandbox_user
+DB_PASS=your_password_here
+
+# Versions
+PHP_VERSION=8.4
+NODE_VERSION=20
+```
+
+### Custom Ports
+
+If default ports conflict with your system:
+
+```ini
+# Example: Use different ports
+FRONTEND_PORT=3001
+BACKEND_PORT=8081
+DB_PORT=3308
+```
+
+Then access:
+
+- Frontend: http://localhost:3001
+- Backend: http://localhost:8081/api
 
 ---
 
@@ -342,264 +163,185 @@ The application will start at `http://localhost:5173` (or another available port
 
 ```
 device-sandbox-simulator/
+├── docker-compose.yml           # Main Docker configuration
+├── .env                          # Environment variables
+├── .env.example                  # Environment template
+│
 ├── backend/
-│   ├── api/
-│   │   ├── devices/
-│   │   │   ├── delete.php
-│   │   │   ├── get.php
-│   │   │   └── save.php
-│   │   └── presets/
-│   │       ├── delete.php
-│   │       ├── get.php
-│   │       ├── list.php
-│   │       └── save.php
-│   ├── config/
-│   │   ├── Autoloader.php
-│   │   ├── cors.php
-│   │   └── env.php
-│   ├── DeviceSandbox/
-│   │   ├── Config/
-│   │   │   ├── Database.php
-│   │   │   └── Response.php
-│   │   ├── Controllers/
-│   │   │   └── BaseController.php
-│   │   ├── Interfaces/
-│   │   │   └── ModelInterface.php
-│   │   ├── Models/
-│   │   │   ├── BaseModel.php
-│   │   │   ├── Device.php
-│   │   │   └── Preset.php
-│   │   └── Traits/
-│   │       └── ValidatesDeviceSettings.php
-│   ├── .env
-│   ├── .env.example
-│   └── .htaccess
+│   ├── Dockerfile                # Backend container config
+│   ├── docker/
+│   │   └── apache-config.conf    # Apache virtual host
+│   ├── .dockerignore             # Files to exclude
+│   └── ... (application files)
 │
-├── database/
-│   └── schema.sql
+├── frontend/
+│   ├── Dockerfile                # Frontend container config
+│   ├── .dockerignore             # Files to exclude
+│   └── ... (application files)
 │
-└── frontend/
-    ├── src/
-    │   ├── components/
-    │   │   ├── Canvas/
-    │   │   ├── Controls/
-    │   │   ├── Devices/
-    │   │   ├── Icons/
-    │   │   ├── Modals/
-    │   │   ├── Notification/
-    │   │   └── Sidebar/
-    │   ├── context/
-    │   │   └── DeviceContext.tsx
-    │   ├── services/
-    │   │   └── api.ts
-    │   ├── types/
-    │   │   └── index.ts
-    │   ├── utils/
-    │   │   └── constants.ts
-    │   ├── App.tsx
-    │   ├── index.css
-    │   └── main.tsx
-    ├── eslint.config.js
-    ├── index.html
-    ├── package.json
-    ├── tsconfig.json
-    └── vite.config.ts
-```
-
----
-
-## 🏗️ Architecture Overview
-
-### Backend Architecture
-
-- **MVC Pattern** - Separation of concerns
-- **PSR-4 Autoloading** - Modern PHP class loading
-- **RESTful API** - Standard HTTP methods and status codes
-- **Singleton Pattern** - Single database connection
-- **Trait-based Validation** - Reusable validation logic
-- **CORS Handling** - Secure cross-origin requests
-
-### Frontend Architecture
-
-- **Component-based** - Reusable React components
-- **Context API** - Centralized state management
-- **TypeScript** - Type-safe development
-- **Custom Hooks** - Reusable logic (useDevice)
-- **Service Layer** - API abstraction
-- **Constants** - Centralized configuration
-
-### Database Design
-
-- **devices** table - Stores current device on canvas (only one)
-- **presets** table - Stores saved device configurations
-- **JSON columns** - Flexible settings storage
-- **Proper indexing** - Optimized queries
-- **Constraints** - Data integrity
-
----
-
-## 🧪 API Documentation
-
-### Base URL
-
-```
-http://localhost/device-sandbox-simulator/backend/api
-```
-
-### Endpoints
-
-#### **Get Current Device**
-
-```http
-GET /devices/get.php
-```
-
-**Response:**
-
-```json
-{
-  "success": true,
-  "data": {
-    "id": 1,
-    "type": "light",
-    "settings": {
-      "power": true,
-      "brightness": 75,
-      "colorTemp": "cool"
-    }
-  }
-}
-```
-
-#### **Save Device**
-
-```http
-POST /devices/save.php
-Content-Type: application/json
-
-{
-  "type": "light",
-  "settings": {
-    "power": false,
-    "brightness": 0,
-    "colorTemp": "warm"
-  }
-}
-```
-
-#### **Delete Device**
-
-```http
-DELETE /devices/delete.php
-```
-
-#### **Get All Presets**
-
-```http
-GET /presets/list.php
-```
-
-#### **Save Preset**
-
-```http
-POST /presets/save.php
-Content-Type: application/json
-
-{
-  "name": "Bright Cool Light",
-  "device_type": "light",
-  "device_settings": {
-    "power": true,
-    "brightness": 100,
-    "colorTemp": "cool"
-  }
-}
-```
-
-#### **Delete Preset**
-
-```http
-DELETE /presets/delete.php/{id}
+└── database/
+    └── schema.sql                # Database initialization
 ```
 
 ---
 
 ## 🐛 Troubleshooting
 
-### Backend Issues
+### Issue: Port already in use
 
-**Problem:** "Database connection failed"
+**Error:** `Bind for 0.0.0.0:3000 failed: port is already allocated`
 
-```
-Solution:
-1. Check MySQL is running
-2. Verify credentials in backend/.env
-3. Ensure database 'device_sandbox' exists
-```
+**Solution:**
 
-**Problem:** "404 Not Found" on API endpoints
+1. Stop the service using that port
+2. Or change port in `.env`:
+   ```ini
+   FRONTEND_PORT=3001
+   ```
+3. Restart: `docker-compose up`
 
-```
-Solution:
-1. Verify backend is in Apache htdocs directory
-2. Check .htaccess file exists
-3. Ensure mod_rewrite is enabled
-4. Restart Apache
-```
+---
 
-**Problem:** "CORS policy" errors in browser console
+### Issue: Database connection failed
 
-```
-Solution:
-1. Check backend/config/cors.php includes your frontend URL
-2. Verify Apache mod_headers is enabled
+**Solution:**
+
+1. Check if database is healthy:
+   ```bash
+   docker-compose ps
+   ```
+2. Wait for database initialization (30 seconds first time)
+3. Check logs:
+   ```bash
+   docker-compose logs database
+   ```
+
+---
+
+### Issue: Frontend can't connect to backend
+
+**Solution:**
+
+1. Verify backend is running:
+   ```bash
+   curl http://localhost:8080/api/devices/get.php
+   ```
+2. Check `API_BASE_URL` in `frontend\src\utils\constants.ts`
 3. Clear browser cache
+4. Rebuild frontend:
+   ```bash
+   docker-compose build frontend
+   docker-compose up
+   ```
+
+---
+
+### Issue: Changes not reflecting
+
+**Frontend changes:**
+
+- Hot reload is enabled by default
+- If not working, restart: `docker-compose restart frontend`
+
+**Backend changes:**
+
+- Apache serves files from mounted volume
+- Changes should be immediate
+- If not, restart: `docker-compose restart backend`
+
+**Database schema changes:**
+
+- Stop containers: `docker-compose down`
+- Remove volume: `docker volume rm device_sandbox_db_data`
+- Start again: `docker-compose up`
+
+---
+
+## 🔍 Useful Commands
+
+### Container Management
+
+```bash
+# List running containers
+docker-compose ps
+
+# Execute command in container
+docker-compose exec backend bash
+docker-compose exec frontend sh
+docker-compose exec database mysql -u root -p
+
+# View resource usage
+docker stats
+
+# Inspect service
+docker-compose logs backend
 ```
 
-**Problem:** "Permission denied" errors
+### Database Access
 
-```
-Solution (Linux/macOS):
-sudo chmod -R 755 /path/to/backend
-sudo chown -R www-data:www-data /path/to/backend
-```
+```bash
+# Connect to MySQL from host
+mysql -h localhost -P 3307 -u sandbox_user -p
 
-### Frontend Issues
+# Or from inside container
+docker-compose exec database mysql -u sandbox_user -p device_sandbox
 
-**Problem:** "Cannot connect to server"
+# Backup database
+docker-compose exec database mysqldump -u root -p device_sandbox > backup.sql
 
-```
-Solution:
-1. Verify backend URL in constants.ts
-2. Check backend is running and accessible
-3. Test API directly in browser
+# Restore database
+docker-compose exec -T database mysql -u root -p device_sandbox < backup.sql
 ```
 
-**Problem:** "Module not found" errors
+### Clean Up
 
-```
-Solution:
-cd frontend
-rm -rf node_modules package-lock.json
-npm install
+```bash
+# Remove stopped containers
+docker-compose rm
+
+# Remove unused images
+docker image prune
+
+# Remove unused volumes
+docker volume prune
+
+# Remove everything (use with caution)
+docker system prune -a --volumes
 ```
 
 ---
 
-## 🔒 Security Considerations
+## 📝 Development Workflow
 
-- ✅ Input sanitization in backend
-- ✅ SQL injection prevention (prepared statements)
-- ✅ CORS configuration
-- ✅ XSS protection headers
-- ✅ Directory browsing disabled
-- ✅ .env file protection
-- ⚠️ **Note:** This is a development setup. For production:
-  - Use environment-specific .env files
-  - Enable HTTPS
-  - Implement authentication
-  - Add rate limiting
-  - Use production database credentials
+1. **Make code changes** (hot reload handles the rest)
+2. **Backend changes** reflect immediately (mounted volume)
+3. **Database changes** require schema update:
+   ```bash
+   docker-compose exec database mysql -u root -p device_sandbox < database/schema.sql
+   ```
+4. **Test changes** at http://localhost:3000
+
+---
+
+## 🎯 Advantages Over Manual Setup
+
+| Feature      | Docker                | Manual Setup          |
+| ------------ | --------------------- | --------------------- |
+| Setup Time   | 2-3 minutes           | 10-15 minutes         |
+| Dependencies | Auto-installed        | Manual installation   |
+| Consistency  | Same on all machines  | "Works on my machine" |
+| Isolation    | Fully isolated        | System-wide           |
+| Cleanup      | `docker-compose down` | Manual uninstall      |
+| Portability  | Works anywhere        | OS-specific           |
+
+---
+
+## 📞 Support
+
+### Documentation
+
+- Main README: [react-php branch](../../tree/react-php)
+- Docker Hub: https://hub.docker.com/
 
 ---
 
@@ -615,10 +357,13 @@ Created by Md. Mesbah Hossain
 
 ---
 
-## 📞 Support
+## 🙏 Acknowledgments
 
-For issues or questions:
+- Docker for containerization
+- React + TypeScript for frontend
+- PHP + Apache for backend
+- MySQL for database
 
-1. Check the Troubleshooting section above
-2. Review API documentation
-3. Contact: mesbahhossain@gmail.com
+---
+
+**Ready to go! Just run `docker-compose up` and you're done! 🎉**

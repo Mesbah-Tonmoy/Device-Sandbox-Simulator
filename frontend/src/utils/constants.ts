@@ -7,7 +7,7 @@ import type {
 
 // API Configuration
 export const API_BASE_URL =
-  'http://localhost/device-sandbox-simulator/backend/api';
+  import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
 // API Endpoints
 export const API_ENDPOINTS = {
